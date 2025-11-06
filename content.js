@@ -168,26 +168,23 @@
                                 transition: all 0.15s;">
                             <option value="">Load preset...</option>
                         </select>
-                        <button id="savePreset" title="Save as new preset" style="height: 34px; padding: 0 12px;
+                        <button id="savePreset" title="Save current filters as preset" style="width: 34px; height: 34px;
                                 background: #10b981; border: none; border-radius: 7px; cursor: pointer;
-                                display: flex; align-items: center; gap: 6px; transition: all 0.15s;
-                                font-size: 11px; font-weight: 600; color: white;">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                display: flex; align-items: center; justify-content: center; transition: all 0.15s;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                <polyline points="17 21 17 13 7 13 7 21"/>
+                                <polyline points="7 3 7 8 15 8"/>
                             </svg>
-                            <span>Save</span>
                         </button>
-                        <button id="deletePreset" title="Delete preset" style="height: 34px; padding: 0 12px;
+                        <button id="deletePreset" title="Delete selected preset" style="width: 34px; height: 34px;
                                 background: #ef4444; border: none; border-radius: 7px; cursor: pointer;
-                                display: flex; align-items: center; gap: 6px; transition: all 0.15s; opacity: 0.4;
-                                font-size: 11px; font-weight: 600; color: white;"
+                                display: flex; align-items: center; justify-content: center; transition: all 0.15s; opacity: 0.4;"
                                 disabled>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
-                                <line x1="18" y1="6" x2="6" y2="18"/>
-                                <line x1="6" y1="6" x2="18" y2="18"/>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                             </svg>
-                            <span>Del</span>
                         </button>
                     </div>
                 </div>
