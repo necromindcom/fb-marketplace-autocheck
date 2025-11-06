@@ -354,87 +354,126 @@
       const currentPreset = presetSelect.value;
       const presets = await loadPresets();
 
-      let finalName = null;
+      const savePreset = async (finalName) => {
+        const existingIndex = presets.findIndex(p => p.name === finalName);
+
+        if (existingIndex >= 0 && finalName !== currentPreset) {
+          // Name exists, ask to overwrite
+          showConfirmDialog(
+            "Overwrite Preset?",
+            `A preset named "${finalName}" already exists. Do you want to overwrite it?`,
+            "Overwrite",
+            "Cancel",
+            async () => {
+              await performSave(finalName, presets);
+            },
+            undefined,
+            true
+          );
+        } else {
+          await performSave(finalName, presets);
+        }
+      };
+
+      const performSave = async (finalName, presets) => {
+        const existingIndex = presets.findIndex(p => p.name === finalName);
+
+        const newPreset = {
+          name: finalName,
+          include: includeInput.value,
+          exclude: excludeInput.value
+        };
+
+        if (existingIndex >= 0) {
+          presets[existingIndex] = newPreset;
+        } else {
+          presets.push(newPreset);
+        }
+
+        await savePresets(presets);
+
+        // Refresh select options
+        presetSelect.innerHTML = '<option value="">Load preset...</option>';
+        presets.forEach(preset => {
+          const option = document.createElement('option');
+          option.value = preset.name;
+          option.textContent = preset.name;
+          presetSelect.appendChild(option);
+        });
+
+        presetSelect.value = finalName;
+        deletePresetBtn.disabled = false;
+        deletePresetBtn.style.opacity = "1";
+      };
 
       // If a preset is selected, ask whether to update or save as new
       if (currentPreset) {
-        const choice = confirm(`Update existing preset "${currentPreset}"?\n\nOK = Update existing\nCancel = Save as new preset`);
-
-        if (choice) {
-          // Update existing
-          finalName = currentPreset;
-        } else {
-          // Save as new
-          const newName = prompt("Enter new preset name:");
-          if (!newName || !newName.trim()) return;
-          finalName = newName.trim();
-        }
+        showConfirmDialog(
+          "Update or Save As New?",
+          `Do you want to update the existing preset "${currentPreset}" or save as a new preset?`,
+          "Update Existing",
+          "Save As New",
+          () => {
+            // Update existing
+            savePreset(currentPreset);
+          },
+          () => {
+            // Save as new - prompt for name
+            showPromptDialog(
+              "Save New Preset",
+              "Enter a name for your new preset:",
+              "",
+              (newName) => {
+                savePreset(newName);
+              }
+            );
+          }
+        );
       } else {
         // No preset selected, ask for name
-        const newName = prompt("Enter preset name:");
-        if (!newName || !newName.trim()) return;
-        finalName = newName.trim();
+        showPromptDialog(
+          "Save Preset",
+          "Enter a name for your preset:",
+          "",
+          (newName) => {
+            savePreset(newName);
+          }
+        );
       }
-
-      // Check if name already exists (and it's not the one we're updating)
-      const existingIndex = presets.findIndex(p => p.name === finalName);
-
-      if (existingIndex >= 0 && finalName !== currentPreset) {
-        if (!confirm(`Preset "${finalName}" already exists. Overwrite?`)) return;
-      }
-
-      const newPreset = {
-        name: finalName,
-        include: includeInput.value,
-        exclude: excludeInput.value
-      };
-
-      if (existingIndex >= 0) {
-        presets[existingIndex] = newPreset;
-      } else {
-        presets.push(newPreset);
-      }
-
-      await savePresets(presets);
-
-      // Refresh select options
-      presetSelect.innerHTML = '<option value="">Load preset...</option>';
-      presets.forEach(preset => {
-        const option = document.createElement('option');
-        option.value = preset.name;
-        option.textContent = preset.name;
-        presetSelect.appendChild(option);
-      });
-
-      presetSelect.value = finalName;
-      deletePresetBtn.disabled = false;
-      deletePresetBtn.style.opacity = "1";
     });
 
     deletePresetBtn.addEventListener("click", async () => {
       const selectedName = presetSelect.value;
       if (!selectedName) return;
 
-      if (!confirm(`Delete preset "${selectedName}"?`)) return;
+      showConfirmDialog(
+        "Delete Preset?",
+        `Are you sure you want to delete the preset "${selectedName}"? This action cannot be undone.`,
+        "Delete",
+        "Cancel",
+        async () => {
+          const presets = await loadPresets();
+          const filtered = presets.filter(p => p.name !== selectedName);
+          await savePresets(filtered);
 
-      const presets = await loadPresets();
-      const filtered = presets.filter(p => p.name !== selectedName);
-      await savePresets(filtered);
+          // Refresh select options
+          presetSelect.innerHTML = '<option value="">Load preset...</option>';
+          filtered.forEach(preset => {
+            const option = document.createElement('option');
+            option.value = preset.name;
+            option.textContent = preset.name;
+            presetSelect.appendChild(option);
+          });
 
-      // Refresh select options
-      presetSelect.innerHTML = '<option value="">Load preset...</option>';
-      filtered.forEach(preset => {
-        const option = document.createElement('option');
-        option.value = preset.name;
-        option.textContent = preset.name;
-        presetSelect.appendChild(option);
-      });
-
-      presetSelect.value = "";
-      includeInput.value = "";
-      excludeInput.value = "";
-      deletePresetBtn.disabled = true;
-      deletePresetBtn.style.opacity = "0.4";
+          presetSelect.value = "";
+          includeInput.value = "";
+          excludeInput.value = "";
+          deletePresetBtn.disabled = true;
+          deletePresetBtn.style.opacity = "0.4";
+        },
+        undefined,
+        true
+      );
     });
 
     // Add hover effects for preset buttons
@@ -824,6 +863,200 @@
       if (container) return container;
     }
     return element.closest("div")?.parentElement;
+  };
+
+  // Custom dialog utilities
+  const showConfirmDialog = (title, message, confirmText = "OK", cancelText = "Cancel", onConfirm, onCancel, isDestructive = false) => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5); z-index: 100000;
+      display: flex; align-items: center; justify-content: center;
+      animation: fadeIn 0.15s ease-out;
+    `;
+
+    const dialog = document.createElement('div');
+    dialog.style.cssText = `
+      background: white; border-radius: 12px; padding: 24px;
+      max-width: 400px; width: 90%;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      animation: slideUp 0.2s ease-out;
+    `;
+
+    dialog.innerHTML = `
+      <style>
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+      </style>
+      <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #111827; font-weight: 600;">
+        ${title}
+      </h3>
+      <p style="margin: 0 0 20px 0; font-size: 13px; color: #6b7280; line-height: 1.5;">
+        ${message}
+      </p>
+      <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button id="cancelBtn" style="padding: 10px 20px; border: 1px solid #e5e7eb;
+                                      background: white; border-radius: 8px; cursor: pointer;
+                                      font-size: 13px; font-weight: 500; color: #6b7280;
+                                      transition: all 0.15s;">
+          ${cancelText}
+        </button>
+        <button id="confirmBtn" style="padding: 10px 20px; border: none;
+                                       background: ${isDestructive ? '#ef4444' : '#111827'}; color: white; border-radius: 8px;
+                                       cursor: pointer; font-size: 13px; font-weight: 500;
+                                       transition: all 0.15s;">
+          ${confirmText}
+        </button>
+      </div>
+    `;
+
+    const confirmBtn = dialog.querySelector('#confirmBtn');
+    const cancelBtn = dialog.querySelector('#cancelBtn');
+
+    confirmBtn.addEventListener('mouseenter', () => {
+      confirmBtn.style.background = isDestructive ? '#dc2626' : '#1f2937';
+      confirmBtn.style.transform = 'translateY(-1px)';
+    });
+    confirmBtn.addEventListener('mouseleave', () => {
+      confirmBtn.style.background = isDestructive ? '#ef4444' : '#111827';
+      confirmBtn.style.transform = 'translateY(0)';
+    });
+
+    cancelBtn.addEventListener('mouseenter', () => {
+      cancelBtn.style.background = '#f9fafb';
+    });
+    cancelBtn.addEventListener('mouseleave', () => {
+      cancelBtn.style.background = 'white';
+    });
+
+    confirmBtn.addEventListener('click', () => {
+      overlay.remove();
+      if (onConfirm) onConfirm();
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      overlay.remove();
+      if (onCancel) onCancel();
+    });
+
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+  };
+
+  const showPromptDialog = (title, message, defaultValue = "", onConfirm, onCancel) => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5); z-index: 100000;
+      display: flex; align-items: center; justify-content: center;
+      animation: fadeIn 0.15s ease-out;
+    `;
+
+    const dialog = document.createElement('div');
+    dialog.style.cssText = `
+      background: white; border-radius: 12px; padding: 24px;
+      max-width: 400px; width: 90%;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      animation: slideUp 0.2s ease-out;
+    `;
+
+    dialog.innerHTML = `
+      <style>
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+      </style>
+      <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #111827; font-weight: 600;">
+        ${title}
+      </h3>
+      <p style="margin: 0 0 16px 0; font-size: 13px; color: #6b7280; line-height: 1.5;">
+        ${message}
+      </p>
+      <input type="text" id="promptInput" value="${defaultValue}"
+             style="width: 100%; padding: 10px 12px; border: 1.5px solid #e5e7eb;
+                    border-radius: 8px; font-size: 13px; margin-bottom: 20px;
+                    font-family: inherit; color: #1f2937; box-sizing: border-box;
+                    transition: all 0.15s;">
+      <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button id="cancelBtn" style="padding: 10px 20px; border: 1px solid #e5e7eb;
+                                      background: white; border-radius: 8px; cursor: pointer;
+                                      font-size: 13px; font-weight: 500; color: #6b7280;
+                                      transition: all 0.15s;">
+          Cancel
+        </button>
+        <button id="confirmBtn" style="padding: 10px 20px; border: none;
+                                       background: #111827; color: white; border-radius: 8px;
+                                       cursor: pointer; font-size: 13px; font-weight: 500;
+                                       transition: all 0.15s;">
+          Save
+        </button>
+      </div>
+    `;
+
+    const input = dialog.querySelector('#promptInput');
+    const confirmBtn = dialog.querySelector('#confirmBtn');
+    const cancelBtn = dialog.querySelector('#cancelBtn');
+
+    // Focus input and select text
+    setTimeout(() => {
+      input.focus();
+      input.select();
+    }, 100);
+
+    // Input focus effect
+    input.addEventListener('focus', () => {
+      input.style.borderColor = '#111827';
+      input.style.boxShadow = '0 0 0 3px rgba(17,24,39,0.05)';
+    });
+    input.addEventListener('blur', () => {
+      input.style.borderColor = '#e5e7eb';
+      input.style.boxShadow = 'none';
+    });
+
+    // Enter key to confirm
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const value = input.value.trim();
+        if (value) {
+          overlay.remove();
+          if (onConfirm) onConfirm(value);
+        }
+      } else if (e.key === 'Escape') {
+        overlay.remove();
+        if (onCancel) onCancel();
+      }
+    });
+
+    confirmBtn.addEventListener('mouseenter', () => {
+      confirmBtn.style.background = '#1f2937';
+      confirmBtn.style.transform = 'translateY(-1px)';
+    });
+    confirmBtn.addEventListener('mouseleave', () => {
+      confirmBtn.style.background = '#111827';
+      confirmBtn.style.transform = 'translateY(0)';
+    });
+
+    cancelBtn.addEventListener('mouseenter', () => {
+      cancelBtn.style.background = '#f9fafb';
+    });
+    cancelBtn.addEventListener('mouseleave', () => {
+      cancelBtn.style.background = 'white';
+    });
+
+    confirmBtn.addEventListener('click', () => {
+      const value = input.value.trim();
+      if (value) {
+        overlay.remove();
+        if (onConfirm) onConfirm(value);
+      }
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      overlay.remove();
+      if (onCancel) onCancel();
+    });
+
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
   };
 
   const showGroupPrioritizationDialog = (checkboxes, maxSelect, onConfirm, onCancel) => {
