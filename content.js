@@ -160,10 +160,10 @@
                         </span>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 6px; align-items: center;">
-                        <select id="presetSelect" style="height: 34px; padding: 0 28px 0 10px;
+                        <select id="presetSelect" style="height: 34px; padding: 0 32px 0 10px;
                                 border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 12px;
-                                background: #fff url('data:image/svg+xml;charset=UTF-8,%3csvg width=\'12\' height=\'12\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236b7280\' stroke-width=\'2\' stroke-linecap=\'round\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3cpolyline points=\'6 9 12 15 18 9\'/%3e%3c/svg%3e') no-repeat;
-                                background-position: right 8px center; background-size: 12px;
+                                background: #fff url('data:image/svg+xml;charset=UTF-8,%3csvg width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236b7280\' stroke-width=\'2.5\' stroke-linecap=\'round\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3cpolyline points=\'6 9 12 15 18 9\'/%3e%3c/svg%3e') no-repeat;
+                                background-position: right 9px center; background-size: 14px;
                                 appearance: none; cursor: pointer; color: #1f2937; font-family: inherit;
                                 transition: all 0.15s;">
                             <option value="">Load preset...</option>
@@ -623,13 +623,25 @@
     // Input focus effects
     [includeInput, excludeInput].forEach(input => {
       input.addEventListener("focus", () => {
-        input.style.borderColor = "#111827";
-        input.style.boxShadow = "0 0 0 3px rgba(17,24,39,0.05)";
+        input.style.borderColor = "#10b981";
+        input.style.boxShadow = "0 0 0 4px rgba(16,185,129,0.1)";
+        input.style.transform = "translateY(-1px)";
       });
       input.addEventListener("blur", () => {
         input.style.borderColor = "#e5e7eb";
         input.style.boxShadow = "none";
+        input.style.transform = "translateY(0)";
       });
+    });
+
+    // Select focus effect
+    presetSelect.addEventListener("focus", () => {
+      presetSelect.style.borderColor = "#10b981";
+      presetSelect.style.boxShadow = "0 0 0 4px rgba(16,185,129,0.1)";
+    });
+    presetSelect.addEventListener("blur", () => {
+      presetSelect.style.borderColor = "#e5e7eb";
+      presetSelect.style.boxShadow = "none";
     });
   };
 
