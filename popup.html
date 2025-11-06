@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Groups Checker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        body {
+            width: 320px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Arial, sans-serif;
+            background: #f9fafb;
+            margin: 0;
+            border-radius: 12px;
+        }
+
+        .container {
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        .header {
+            background: #fff;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #10b981;
+            border-radius: 50%;
+        }
+
+        .title {
+            font-weight: 500;
+            font-size: 14px;
+            color: #1f2937;
+            letter-spacing: -0.01em;
+        }
+
+        .content {
+            padding: 20px 16px;
+        }
+
+        .description {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            height: 42px;
+            padding: 0;
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 13px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: -0.01em;
+        }
+
+        .button:hover {
+            background: #1f2937;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .hint {
+            margin-top: 12px;
+            padding: 10px 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+            font-size: 11px;
+            color: #6b7280;
+            text-align: center;
+            border: 1px solid #f3f4f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="status-dot"></div>
+            <span class="title">Auto Groups Checker</span>
+        </div>
+
+        <div class="content">
+            <p class="description">Automatically checks and marks relevant Facebook Marketplace listings based on your filters.</p>
+
+            <a href="https://www.facebook.com/marketplace/you/selling" target="_blank" class="button">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                </svg>
+                <span>Open Marketplace</span>
+            </a>
+
+            <div class="hint">
+                Widget will appear on the marketplace page
+            </div>
+        </div>
+    </div>
+</body>
+</html>
