@@ -16,13 +16,13 @@
            window.location.href.includes('marketplace/you/dashboard');
   };
 
-  const checkAndCreateWidget = () => {
+  const checkAndCreateWidget = async () => {
     const existingModal = document.getElementById('marketplaceFilterModal');
 
     if (isCorrectPage()) {
       if (!existingModal && !widgetExists) {
         console.log("Auto Groups Checker: Creating widget on correct page");
-        createUI();
+        await createUI();
         widgetExists = true;
       }
     } else {
