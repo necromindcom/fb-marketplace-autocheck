@@ -132,38 +132,6 @@
             </div>
 
             <div id="modalBody" style="padding: 16px; display: grid; gap: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
-                <!-- Presets -->
-                <div style="display: grid; gap: 8px;">
-                    <div style="display: flex; gap: 6px; align-items: center;">
-                        <select id="presetSelect" style="flex: 1; height: 36px; padding: 0 32px 0 10px;
-                                border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 12px;
-                                background: #fff url('data:image/svg+xml;charset=UTF-8,%3csvg width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236b7280\' stroke-width=\'2\' stroke-linecap=\'round\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3cpolyline points=\'6 9 12 15 18 9\'/%3e%3c/svg%3e') no-repeat;
-                                background-position: right 8px center; background-size: 14px;
-                                appearance: none; cursor: pointer; color: #1f2937; font-family: inherit;
-                                transition: all 0.15s;">
-                            <option value="">Select preset...</option>
-                        </select>
-                        <button id="savePreset" title="Save current filters as preset" style="width: 36px; height: 36px;
-                                background: #10b981; border: none; border-radius: 8px; cursor: pointer;
-                                display: flex; align-items: center; justify-content: center; transition: all 0.15s;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
-                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                                <polyline points="17 21 17 13 7 13 7 21"/>
-                                <polyline points="7 3 7 8 15 8"/>
-                            </svg>
-                        </button>
-                        <button id="deletePreset" title="Delete selected preset" style="width: 36px; height: 36px;
-                                background: #ef4444; border: none; border-radius: 8px; cursor: pointer;
-                                display: flex; align-items: center; justify-content: center; transition: all 0.15s; opacity: 0.5;"
-                                disabled>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
-                                <polyline points="3 6 5 6 21 6"/>
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
                 <!-- Counter -->
                 <div id="counterDiv" style="background: #f9fafb; border: 1px solid #e5e7eb;
                                             padding: 12px; border-radius: 10px; text-align: center;">
@@ -176,6 +144,52 @@
                     </div>
                     <div id="counterText" style="font-size: 22px; font-weight: 600; color: #111827; letter-spacing: -0.02em;">0 / 20</div>
                     <div style="font-size: 11px; color: #9ca3af; margin-top: 2px; font-weight: 400;">items checked</div>
+                </div>
+
+                <!-- Presets Section -->
+                <div style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+                            border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                            <polyline points="17 21 17 13 7 13 7 21"/>
+                            <polyline points="7 3 7 8 15 8"/>
+                        </svg>
+                        <span style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Saved Presets
+                        </span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 6px; align-items: center;">
+                        <select id="presetSelect" style="height: 34px; padding: 0 28px 0 10px;
+                                border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 12px;
+                                background: #fff url('data:image/svg+xml;charset=UTF-8,%3csvg width=\'12\' height=\'12\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236b7280\' stroke-width=\'2\' stroke-linecap=\'round\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3cpolyline points=\'6 9 12 15 18 9\'/%3e%3c/svg%3e') no-repeat;
+                                background-position: right 8px center; background-size: 12px;
+                                appearance: none; cursor: pointer; color: #1f2937; font-family: inherit;
+                                transition: all 0.15s;">
+                            <option value="">Load preset...</option>
+                        </select>
+                        <button id="savePreset" title="Save as new preset" style="height: 34px; padding: 0 12px;
+                                background: #10b981; border: none; border-radius: 7px; cursor: pointer;
+                                display: flex; align-items: center; gap: 6px; transition: all 0.15s;
+                                font-size: 11px; font-weight: 600; color: white;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            <span>Save</span>
+                        </button>
+                        <button id="deletePreset" title="Delete preset" style="height: 34px; padding: 0 12px;
+                                background: #ef4444; border: none; border-radius: 7px; cursor: pointer;
+                                display: flex; align-items: center; gap: 6px; transition: all 0.15s; opacity: 0.4;
+                                font-size: 11px; font-weight: 600; color: white;"
+                                disabled>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+                                <line x1="18" y1="6" x2="6" y2="18"/>
+                                <line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                            <span>Del</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Include Input -->
@@ -325,7 +339,7 @@
       const selectedName = presetSelect.value;
       if (!selectedName) {
         deletePresetBtn.disabled = true;
-        deletePresetBtn.style.opacity = "0.5";
+        deletePresetBtn.style.opacity = "0.4";
         return;
       }
 
@@ -361,7 +375,7 @@
       await savePresets(presets);
 
       // Refresh select options
-      presetSelect.innerHTML = '<option value="">Select preset...</option>';
+      presetSelect.innerHTML = '<option value="">Load preset...</option>';
       presets.forEach(preset => {
         const option = document.createElement('option');
         option.value = preset.name;
@@ -385,7 +399,7 @@
       await savePresets(filtered);
 
       // Refresh select options
-      presetSelect.innerHTML = '<option value="">Select preset...</option>';
+      presetSelect.innerHTML = '<option value="">Load preset...</option>';
       filtered.forEach(preset => {
         const option = document.createElement('option');
         option.value = preset.name;
@@ -397,19 +411,32 @@
       includeInput.value = "";
       excludeInput.value = "";
       deletePresetBtn.disabled = true;
-      deletePresetBtn.style.opacity = "0.5";
+      deletePresetBtn.style.opacity = "0.4";
     });
 
     // Add hover effects for preset buttons
-    [savePresetBtn, deletePresetBtn].forEach(btn => {
-      btn.addEventListener("mouseenter", () => {
-        if (!btn.disabled) {
-          btn.style.transform = "scale(1.05)";
-        }
-      });
-      btn.addEventListener("mouseleave", () => {
-        btn.style.transform = "scale(1)";
-      });
+    savePresetBtn.addEventListener("mouseenter", () => {
+      savePresetBtn.style.background = "#059669";
+      savePresetBtn.style.transform = "translateY(-1px)";
+      savePresetBtn.style.boxShadow = "0 4px 8px rgba(16,185,129,0.3)";
+    });
+    savePresetBtn.addEventListener("mouseleave", () => {
+      savePresetBtn.style.background = "#10b981";
+      savePresetBtn.style.transform = "translateY(0)";
+      savePresetBtn.style.boxShadow = "none";
+    });
+
+    deletePresetBtn.addEventListener("mouseenter", () => {
+      if (!deletePresetBtn.disabled) {
+        deletePresetBtn.style.background = "#dc2626";
+        deletePresetBtn.style.transform = "translateY(-1px)";
+        deletePresetBtn.style.boxShadow = "0 4px 8px rgba(239,68,68,0.3)";
+      }
+    });
+    deletePresetBtn.addEventListener("mouseleave", () => {
+      deletePresetBtn.style.background = "#ef4444";
+      deletePresetBtn.style.transform = "translateY(0)";
+      deletePresetBtn.style.boxShadow = "none";
     });
 
     confirmButton.addEventListener("click", () => {
