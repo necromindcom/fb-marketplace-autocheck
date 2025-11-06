@@ -291,6 +291,23 @@
       });
     });
 
+    // Load and apply collapse state
+    loadCollapseState().then(savedCollapsed => {
+      isCollapsed = savedCollapsed;
+      const svg = toggleCollapseBtn.querySelector('svg');
+
+      if (isCollapsed) {
+        modalBody.style.maxHeight = "0";
+        modalBody.style.padding = "0 16px";
+        modalBody.style.opacity = "0";
+        modalBody.style.overflow = "hidden";
+        if (svg) {
+          svg.innerHTML = '<polyline points="6 15 12 9 18 15"/>';
+        }
+        toggleCollapseBtn.style.background = "#f3f4f6";
+      }
+    });
+
     // Initialize dragging immediately
     initializeDragging(modal);
 
@@ -536,6 +553,9 @@
     toggleCollapseBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       isCollapsed = !isCollapsed;
+
+      // Save collapse state
+      saveCollapseState(isCollapsed);
 
       const svg = toggleCollapseBtn.querySelector('svg');
 
@@ -1243,6 +1263,18 @@
 
   const saveWidgetPosition = (top, left) => {
     chrome.storage.local.set({ widgetPosition: { top, left } });
+  };
+
+  const loadCollapseState = async () => {
+    return new Promise((resolve) => {
+      chrome.storage.local.get(['isCollapsed'], (result) => {
+        resolve(result.isCollapsed || false);
+      });
+    });
+  };
+
+  const saveCollapseState = (isCollapsed) => {
+    chrome.storage.local.set({ isCollapsed });
   };
 
   const loadPresets = async () => {
