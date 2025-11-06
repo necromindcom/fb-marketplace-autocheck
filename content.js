@@ -73,7 +73,7 @@
     console.log("Auto Groups Checker: Monitoring URL changes...");
   };
 
-  const createUI = () => {
+  const createUI = async () => {
 
     const modal = document.createElement("div");
     modal.id = "marketplaceFilterModal";
@@ -85,8 +85,10 @@
     const initialTop = 70;
     const initialLeft = Math.max(modalMargin, window.innerWidth - modalWidth - modalMargin);
 
-    modal.style.top = `${initialTop}px`;
-    modal.style.left = `${initialLeft}px`;
+    // Load saved position or use default
+    const savedPosition = await loadWidgetPosition();
+    modal.style.top = savedPosition ? `${savedPosition.top}px` : `${initialTop}px`;
+    modal.style.left = savedPosition ? `${savedPosition.left}px` : `${initialLeft}px`;
     modal.style.background = "transparent";
     modal.style.borderRadius = "12px";
     modal.style.boxShadow = "0 10px 30px rgba(0,0,0,0.3)";
@@ -130,6 +132,38 @@
             </div>
 
             <div id="modalBody" style="padding: 16px; display: grid; gap: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                <!-- Presets -->
+                <div style="display: grid; gap: 8px;">
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <select id="presetSelect" style="flex: 1; height: 36px; padding: 0 32px 0 10px;
+                                border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 12px;
+                                background: #fff url('data:image/svg+xml;charset=UTF-8,%3csvg width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236b7280\' stroke-width=\'2\' stroke-linecap=\'round\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3cpolyline points=\'6 9 12 15 18 9\'/%3e%3c/svg%3e') no-repeat;
+                                background-position: right 8px center; background-size: 14px;
+                                appearance: none; cursor: pointer; color: #1f2937; font-family: inherit;
+                                transition: all 0.15s;">
+                            <option value="">Select preset...</option>
+                        </select>
+                        <button id="savePreset" title="Save current filters as preset" style="width: 36px; height: 36px;
+                                background: #10b981; border: none; border-radius: 8px; cursor: pointer;
+                                display: flex; align-items: center; justify-content: center; transition: all 0.15s;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                <polyline points="17 21 17 13 7 13 7 21"/>
+                                <polyline points="7 3 7 8 15 8"/>
+                            </svg>
+                        </button>
+                        <button id="deletePreset" title="Delete selected preset" style="width: 36px; height: 36px;
+                                background: #ef4444; border: none; border-radius: 8px; cursor: pointer;
+                                display: flex; align-items: center; justify-content: center; transition: all 0.15s; opacity: 0.5;"
+                                disabled>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Counter -->
                 <div id="counterDiv" style="background: #f9fafb; border: 1px solid #e5e7eb;
                                             padding: 12px; border-radius: 10px; text-align: center;">
@@ -227,11 +261,24 @@
     const modalBody = modal.querySelector("#modalBody");
     const toggleCollapseBtn = modal.querySelector("#toggleCollapse");
     const closeWidgetBtn = modal.querySelector("#closeWidget");
+    const presetSelect = modal.querySelector("#presetSelect");
+    const savePresetBtn = modal.querySelector("#savePreset");
+    const deletePresetBtn = modal.querySelector("#deletePreset");
 
     let isCollapsed = false;
 
     // Update counter after short delay to ensure DOM is ready
     setTimeout(() => updateCounter(counterDiv), 300);
+
+    // Load and populate presets
+    loadPresets().then(presets => {
+      presets.forEach(preset => {
+        const option = document.createElement('option');
+        option.value = preset.name;
+        option.textContent = preset.name;
+        presetSelect.appendChild(option);
+      });
+    });
 
     // Initialize dragging immediately
     initializeDragging(modal);
@@ -272,6 +319,98 @@
 
     // Ensure widget is in viewport on initial load
     setTimeout(ensureInViewport, 100);
+
+    // Preset functionality
+    presetSelect.addEventListener("change", async () => {
+      const selectedName = presetSelect.value;
+      if (!selectedName) {
+        deletePresetBtn.disabled = true;
+        deletePresetBtn.style.opacity = "0.5";
+        return;
+      }
+
+      const presets = await loadPresets();
+      const preset = presets.find(p => p.name === selectedName);
+      if (preset) {
+        includeInput.value = preset.include;
+        excludeInput.value = preset.exclude;
+        deletePresetBtn.disabled = false;
+        deletePresetBtn.style.opacity = "1";
+      }
+    });
+
+    savePresetBtn.addEventListener("click", async () => {
+      const name = prompt("Enter preset name:");
+      if (!name || !name.trim()) return;
+
+      const presets = await loadPresets();
+      const existingIndex = presets.findIndex(p => p.name === name);
+
+      const newPreset = {
+        name: name.trim(),
+        include: includeInput.value,
+        exclude: excludeInput.value
+      };
+
+      if (existingIndex >= 0) {
+        presets[existingIndex] = newPreset;
+      } else {
+        presets.push(newPreset);
+      }
+
+      await savePresets(presets);
+
+      // Refresh select options
+      presetSelect.innerHTML = '<option value="">Select preset...</option>';
+      presets.forEach(preset => {
+        const option = document.createElement('option');
+        option.value = preset.name;
+        option.textContent = preset.name;
+        presetSelect.appendChild(option);
+      });
+
+      presetSelect.value = name.trim();
+      deletePresetBtn.disabled = false;
+      deletePresetBtn.style.opacity = "1";
+    });
+
+    deletePresetBtn.addEventListener("click", async () => {
+      const selectedName = presetSelect.value;
+      if (!selectedName) return;
+
+      if (!confirm(`Delete preset "${selectedName}"?`)) return;
+
+      const presets = await loadPresets();
+      const filtered = presets.filter(p => p.name !== selectedName);
+      await savePresets(filtered);
+
+      // Refresh select options
+      presetSelect.innerHTML = '<option value="">Select preset...</option>';
+      filtered.forEach(preset => {
+        const option = document.createElement('option');
+        option.value = preset.name;
+        option.textContent = preset.name;
+        presetSelect.appendChild(option);
+      });
+
+      presetSelect.value = "";
+      includeInput.value = "";
+      excludeInput.value = "";
+      deletePresetBtn.disabled = true;
+      deletePresetBtn.style.opacity = "0.5";
+    });
+
+    // Add hover effects for preset buttons
+    [savePresetBtn, deletePresetBtn].forEach(btn => {
+      btn.addEventListener("mouseenter", () => {
+        if (!btn.disabled) {
+          btn.style.transform = "scale(1.05)";
+        }
+      });
+      btn.addEventListener("mouseleave", () => {
+        btn.style.transform = "scale(1)";
+      });
+    });
 
     confirmButton.addEventListener("click", () => {
       try {
@@ -447,6 +586,11 @@
       modal.style.cursor = 'default';
       header.style.cursor = 'move';
 
+      // Save new position
+      const top = parseFloat(modal.style.top);
+      const left = parseFloat(modal.style.left);
+      saveWidgetPosition(top, left);
+
       e.preventDefault();
       e.stopPropagation();
     };
@@ -531,6 +675,24 @@
 
     // Calculate how many we can still check (after unchecking completes)
     const availableSlots = MAX_CHECKED - currentlyChecked;
+
+    // If more groups match than available slots, show prioritization dialog
+    if (toCheck.length > availableSlots) {
+      showGroupPrioritizationDialog(
+        toCheck,
+        availableSlots,
+        (selectedCheckboxes) => {
+          const toCheckLimited = selectedCheckboxes;
+          const skipped = toCheck.length - toCheckLimited.length;
+          executeChecking(toCheckLimited, toUncheck, skipped, messageDiv, counterDiv, confirmButton);
+        },
+        () => {
+          resetButton(confirmButton);
+        }
+      );
+      return;
+    }
+
     const toCheckLimited = toCheck.slice(0, availableSlots);
     skippedCount = toCheck.length - toCheckLimited.length;
 
@@ -612,6 +774,204 @@
       if (container) return container;
     }
     return element.closest("div")?.parentElement;
+  };
+
+  const showGroupPrioritizationDialog = (checkboxes, maxSelect, onConfirm, onCancel) => {
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5); z-index: 100000;
+      display: flex; align-items: center; justify-content: center;
+    `;
+
+    // Create dialog
+    const dialog = document.createElement('div');
+    dialog.style.cssText = `
+      background: white; border-radius: 16px; padding: 24px;
+      max-width: 500px; max-height: 70vh; width: 90%;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      display: flex; flex-direction: column;
+    `;
+
+    dialog.innerHTML = `
+      <h3 style="margin: 0 0 12px 0; font-size: 18px; color: #111827; font-weight: 600;">
+        Select Groups to Check (${maxSelect} max)
+      </h3>
+      <p style="margin: 0 0 16px 0; font-size: 13px; color: #6b7280;">
+        ${checkboxes.length} groups match your filters, but you can only check ${maxSelect}.
+        Select which groups you want to check:
+      </p>
+      <div id="groupList" style="flex: 1; overflow-y: auto; border: 1px solid #e5e7eb;
+                                    border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+      </div>
+      <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button id="cancelBtn" style="padding: 10px 20px; border: 1px solid #e5e7eb;
+                                      background: white; border-radius: 8px; cursor: pointer;
+                                      font-size: 13px; font-weight: 500; color: #6b7280;">
+          Cancel
+        </button>
+        <button id="confirmBtn" style="padding: 10px 20px; border: none;
+                                       background: #111827; color: white; border-radius: 8px;
+                                       cursor: pointer; font-size: 13px; font-weight: 500;">
+          Confirm Selection
+        </button>
+      </div>
+    `;
+
+    const groupList = dialog.querySelector('#groupList');
+    const selectedCheckboxes = new Set();
+
+    checkboxes.forEach((checkbox, index) => {
+      const container = findItemContainer(checkbox);
+      const text = container ? container.textContent.trim().substring(0, 100) : `Group ${index + 1}`;
+
+      const item = document.createElement('label');
+      item.style.cssText = `
+        display: flex; align-items: center; gap: 8px; padding: 8px;
+        border-radius: 6px; cursor: pointer; margin-bottom: 4px;
+        transition: background 0.15s;
+      `;
+
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.style.cssText = 'width: 16px; height: 16px; cursor: pointer;';
+      cb.checked = index < maxSelect; // Pre-select first N
+      if (cb.checked) selectedCheckboxes.add(checkbox);
+
+      cb.addEventListener('change', () => {
+        if (cb.checked) {
+          if (selectedCheckboxes.size >= maxSelect) {
+            cb.checked = false;
+            return;
+          }
+          selectedCheckboxes.add(checkbox);
+          item.style.background = '#f0f9ff';
+        } else {
+          selectedCheckboxes.delete(checkbox);
+          item.style.background = 'transparent';
+        }
+        confirmBtn.textContent = `Confirm (${selectedCheckboxes.size}/${maxSelect})`;
+      });
+
+      if (cb.checked) item.style.background = '#f0f9ff';
+
+      const label = document.createElement('span');
+      label.style.cssText = 'font-size: 13px; color: #1f2937; flex: 1;';
+      label.textContent = text;
+
+      item.appendChild(cb);
+      item.appendChild(label);
+      groupList.appendChild(item);
+
+      item.addEventListener('mouseenter', () => {
+        if (!cb.checked) item.style.background = '#f9fafb';
+      });
+      item.addEventListener('mouseleave', () => {
+        if (!cb.checked) item.style.background = 'transparent';
+      });
+    });
+
+    const confirmBtn = dialog.querySelector('#confirmBtn');
+    const cancelBtn = dialog.querySelector('#cancelBtn');
+
+    confirmBtn.textContent = `Confirm (${selectedCheckboxes.size}/${maxSelect})`;
+
+    confirmBtn.addEventListener('click', () => {
+      overlay.remove();
+      onConfirm(Array.from(selectedCheckboxes));
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      overlay.remove();
+      onCancel();
+    });
+
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+  };
+
+  const executeChecking = (toCheckLimited, toUncheck, skippedCount, messageDiv, counterDiv, confirmButton) => {
+    let checkedCount = 0;
+    let uncheckedCount = 0;
+    let errorCount = 0;
+
+    // First, uncheck (if not already done)
+    toUncheck.forEach((checkbox, index) => {
+      setTimeout(() => {
+        try {
+          checkbox.scrollIntoView({ behavior: "auto", block: "center" });
+          checkbox.click();
+          uncheckedCount++;
+          updateCounter(counterDiv);
+        } catch (error) {
+          errorCount++;
+        }
+      }, index * SCROLL_DELAY);
+    });
+
+    // Then, check selected groups
+    const uncheckDelay = toUncheck.length * SCROLL_DELAY;
+    toCheckLimited.forEach((checkbox, index) => {
+      setTimeout(() => {
+        try {
+          checkbox.scrollIntoView({ behavior: "auto", block: "center" });
+          checkbox.click();
+          checkedCount++;
+          updateCounter(counterDiv);
+        } catch (error) {
+          errorCount++;
+        }
+      }, uncheckDelay + (index * SCROLL_DELAY));
+    });
+
+    // Wait for all operations to complete
+    const totalOperations = toUncheck.length + toCheckLimited.length;
+    setTimeout(() => {
+      const totalChanges = checkedCount + uncheckedCount;
+      let message = '';
+
+      if (totalChanges === 0) {
+        message = "No changes - all items match";
+      } else {
+        message = `Checked: ${checkedCount}, Unchecked: ${uncheckedCount}`;
+        if (skippedCount > 0) {
+          message += ` (${skippedCount} not selected)`;
+        }
+        if (errorCount > 0) {
+          message += `, Errors: ${errorCount}`;
+        }
+      }
+
+      appendMessage(messageDiv, message);
+      resetButton(confirmButton);
+      updateCounter(counterDiv);
+    }, SCROLL_DELAY * totalOperations + 500);
+  };
+
+  // Storage functions
+  const loadWidgetPosition = async () => {
+    return new Promise((resolve) => {
+      chrome.storage.local.get(['widgetPosition'], (result) => {
+        resolve(result.widgetPosition || null);
+      });
+    });
+  };
+
+  const saveWidgetPosition = (top, left) => {
+    chrome.storage.local.set({ widgetPosition: { top, left } });
+  };
+
+  const loadPresets = async () => {
+    return new Promise((resolve) => {
+      chrome.storage.local.get(['presets'], (result) => {
+        resolve(result.presets || []);
+      });
+    });
+  };
+
+  const savePresets = (presets) => {
+    chrome.storage.local.set({ presets });
   };
 
   try {
