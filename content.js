@@ -354,14 +354,40 @@
     });
 
     savePresetBtn.addEventListener("click", async () => {
-      const name = prompt("Enter preset name:");
-      if (!name || !name.trim()) return;
-
+      const currentPreset = presetSelect.value;
       const presets = await loadPresets();
-      const existingIndex = presets.findIndex(p => p.name === name);
+
+      let finalName = null;
+
+      // If a preset is selected, ask whether to update or save as new
+      if (currentPreset) {
+        const choice = confirm(`Update existing preset "${currentPreset}"?\n\nOK = Update existing\nCancel = Save as new preset`);
+
+        if (choice) {
+          // Update existing
+          finalName = currentPreset;
+        } else {
+          // Save as new
+          const newName = prompt("Enter new preset name:");
+          if (!newName || !newName.trim()) return;
+          finalName = newName.trim();
+        }
+      } else {
+        // No preset selected, ask for name
+        const newName = prompt("Enter preset name:");
+        if (!newName || !newName.trim()) return;
+        finalName = newName.trim();
+      }
+
+      // Check if name already exists (and it's not the one we're updating)
+      const existingIndex = presets.findIndex(p => p.name === finalName);
+
+      if (existingIndex >= 0 && finalName !== currentPreset) {
+        if (!confirm(`Preset "${finalName}" already exists. Overwrite?`)) return;
+      }
 
       const newPreset = {
-        name: name.trim(),
+        name: finalName,
         include: includeInput.value,
         exclude: excludeInput.value
       };
@@ -383,7 +409,7 @@
         presetSelect.appendChild(option);
       });
 
-      presetSelect.value = name.trim();
+      presetSelect.value = finalName;
       deletePresetBtn.disabled = false;
       deletePresetBtn.style.opacity = "1";
     });
