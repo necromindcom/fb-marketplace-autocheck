@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Marketup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="css/output.css">
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Arial, sans-serif;
+            line-height: 1.6;
+            color: #111827;
+            background: #f9fafb;
+            padding-top: 64px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 3rem auto;
+            padding: 3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .last-updated {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            margin: 2rem 0 1rem;
+            color: #111827;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #4b5563;
+            line-height: 1.7;
+        }
+
+        ul {
+            margin: 1rem 0 1rem 2rem;
+            color: #4b5563;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        strong {
+            color: #111827;
+        }
+
+        .container a {
+            color: #10b981;
+            text-decoration: none;
+        }
+
+        .container a:hover {
+            text-decoration: underline;
+        }
+
+        /* CTA Button Gradient */
+        .glow-cta {
+            background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .glow-cta::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .glow-cta:hover {
+            background: linear-gradient(135deg, #166fe5 0%, #1567d3 100%);
+            box-shadow: 0 8px 30px rgba(24, 119, 242, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <div class="w-11 h-11 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
+                        <ion-icon name="storefront-outline" class="text-white text-2xl"></ion-icon>
+                    </div>
+                    <span class="text-xl sm:text-2xl font-bold tracking-tight" style="font-family: 'Poppins', sans-serif;">Market<span class="text-primary-500">up</span></span>
+                </a>
+
+                <div class="hidden md:flex items-center space-x-2">
+                    <a href="index.html#features" class="text-gray-600 hover:text-primary-500 hover:bg-gray-100 transition-all font-medium px-4 py-2 rounded-lg border border-transparent hover:border-gray-200">
+                        Features
+                    </a>
+                    <a href="index.html#how-it-works" class="text-gray-600 hover:text-primary-500 hover:bg-gray-100 transition-all font-medium px-4 py-2 rounded-lg border border-transparent hover:border-gray-200">
+                        How It Works
+                    </a>
+                    <a href="index.html#help" class="text-gray-600 hover:text-primary-500 hover:bg-gray-100 transition-all font-medium px-4 py-2 rounded-lg border border-transparent hover:border-gray-200">
+                        Help
+                    </a>
+                    <a href="index.html" class="ml-2 px-6 py-2.5 glow-cta text-white rounded-xl hover:shadow-lg hover:shadow-primary-500/30 transition-all font-semibold transform hover:scale-105">
+                        Get Started
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <ion-icon name="menu-outline" class="text-3xl text-gray-700"></ion-icon>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden border-t border-gray-200 py-4">
+                <div class="flex flex-col space-y-4">
+                    <a href="index.html#features" class="text-gray-600 hover:text-primary-500 transition-colors px-4 font-medium">Features</a>
+                    <a href="index.html#how-it-works" class="text-gray-600 hover:text-primary-500 transition-colors px-4 font-medium">How It Works</a>
+                    <a href="index.html#help" class="text-gray-600 hover:text-primary-500 transition-colors px-4 font-medium">Help</a>
+                    <a href="index.html" class="mx-4 px-6 py-2.5 bg-primary-500 text-white rounded-xl hover:bg-primary-600 transition-all font-semibold text-center shadow-lg shadow-primary-500/30">
+                        Get Started
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Privacy Policy</h1>
+        <p class="last-updated">Last updated: January 2025</p>
+
+        <h2>Introduction</h2>
+        <p>
+            Marketup ("we", "our", or "the extension") is committed to protecting your privacy.
+            This Privacy Policy explains how we handle information when you use our Chrome extension.
+        </p>
+
+        <h2>Information We DON'T Collect</h2>
+        <p>
+            <strong>Marketup does NOT collect, store, or transmit any personal data.</strong> Specifically:
+        </p>
+        <ul>
+            <li>We do NOT collect your Facebook login credentials</li>
+            <li>We do NOT track your browsing history</li>
+            <li>We do NOT collect information about your listings</li>
+            <li>We do NOT send any data to external servers</li>
+            <li>We do NOT use analytics or tracking tools</li>
+            <li>We do NOT share any information with third parties</li>
+        </ul>
+
+        <h2>How the Extension Works</h2>
+        <p>
+            Marketup operates entirely within your browser:
+        </p>
+        <ul>
+            <li><strong>Local Processing:</strong> All keyword filtering and group selection happens locally on your computer</li>
+            <li><strong>Local Storage:</strong> Your saved presets and widget preferences are stored only in your browser's local storage using Chrome's storage API</li>
+            <li><strong>No External Communication:</strong> The extension does not make any network requests or communicate with external servers</li>
+            <li><strong>Facebook Only:</strong> The extension only interacts with Facebook Marketplace pages that are already open in your browser</li>
+        </ul>
+
+        <h2>Permissions Explained</h2>
+        <p>The extension requires the following Chrome permissions:</p>
+
+        <h3>activeTab & scripting</h3>
+        <p>
+            These permissions allow the extension to read and interact with the Facebook Marketplace group selection page.
+            This is necessary to find checkboxes, read group names, and automatically select/deselect groups based on your filters.
+        </p>
+
+        <h3>storage</h3>
+        <p>
+            This permission allows the extension to save your filter presets and widget preferences locally in your browser.
+            No data leaves your computer.
+        </p>
+
+        <h3>host_permissions (facebook.com)</h3>
+        <p>
+            This limits the extension to only work on Facebook.com pages. The extension cannot access any other websites you visit.
+        </p>
+
+        <h2>Data Storage</h2>
+        <p>
+            The only data stored by the extension is:
+        </p>
+        <ul>
+            <li><strong>Filter Presets:</strong> Your saved keyword combinations (e.g., "gaming, xbox")</li>
+            <li><strong>Widget Position:</strong> The location where you last placed the floating widget</li>
+            <li><strong>Widget State:</strong> Whether the widget was collapsed or expanded</li>
+        </ul>
+        <p>
+            All this data is stored locally using Chrome's <code>chrome.storage.local</code> API and never leaves your device.
+        </p>
+
+        <h2>Third-Party Services</h2>
+        <p>
+            Marketup does not integrate with any third-party services, analytics platforms, or advertising networks.
+        </p>
+
+        <h2>Children's Privacy</h2>
+        <p>
+            The extension does not knowingly collect information from anyone under 13 years of age.
+            The extension is designed for Facebook Marketplace users, who must be at least 18 years old per Facebook's terms.
+        </p>
+
+        <h2>Changes to This Privacy Policy</h2>
+        <p>
+            We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated "Last updated" date.
+        </p>
+
+        <h2>Open Source</h2>
+        <p>
+            Marketup is open source. You can review the complete source code at:
+            <a href="https://github.com/necromindcom/fb-marketplace-autocheck" target="_blank">
+                https://github.com/necromindcom/fb-marketplace-autocheck
+            </a>
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+            If you have any questions about this Privacy Policy, please contact us through our GitHub repository issues page.
+        </p>
+
+        <h2>Your Consent</h2>
+        <p>
+            By using Marketup, you consent to this Privacy Policy.
+        </p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap justify-center gap-8 mb-8">
+                <a href="index.html#features" class="text-gray-400 hover:text-white transition-colors">Features</a>
+                <a href="index.html#how-it-works" class="text-gray-400 hover:text-white transition-colors">How It Works</a>
+                <a href="index.html#help" class="text-gray-400 hover:text-white transition-colors">Help</a>
+                <a href="https://github.com/necromindcom/fb-marketplace-autocheck" target="_blank" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
+                <a href="privacy.html" class="text-gray-400 hover:text-white transition-colors">Privacy</a>
+                <a href="terms.html" class="text-gray-400 hover:text-white transition-colors">Terms</a>
+            </div>
+            <div class="text-center text-gray-400 text-sm">
+                <p>&copy; 2025 Marketup. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Close mobile menu when clicking on a link
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        }
+    </script>
+</body>
+</html>

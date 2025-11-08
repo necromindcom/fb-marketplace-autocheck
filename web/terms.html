@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Marketup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="css/output.css">
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Arial, sans-serif;
+            line-height: 1.6;
+            color: #111827;
+            background: #f9fafb;
+            padding-top: 64px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 3rem auto;
+            padding: 3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .last-updated {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            margin: 2rem 0 1rem;
+            color: #111827;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #4b5563;
+            line-height: 1.7;
+        }
+
+        ul {
+            margin: 1rem 0 1rem 2rem;
+            color: #4b5563;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        strong {
+            color: #111827;
+        }
+
+        .container a {
+            color: #10b981;
+            text-decoration: none;
+        }
+
+        .container a:hover {
+            text-decoration: underline;
+        }
+
+        /* CTA Button Gradient */
+        .glow-cta {
+            background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .glow-cta::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .glow-cta:hover {
+            background: linear-gradient(135deg, #166fe5 0%, #1567d3 100%);
+            box-shadow: 0 8px 30px rgba(24, 119, 242, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <div class="w-11 h-11 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
+                        <ion-icon name="storefront-outline" class="text-white text-2xl"></ion-icon>
+                    </div>
+                    <span class="text-xl sm:text-2xl font-bold tracking-tight" style="font-family: 'Poppins', sans-serif;">Market<span class="text-primary-500">up</span></span>
+                </a>
+
+                <div class="hidden md:flex items-center space-x-2">
+                    <a href="index.html#features" class="text-gray-600 hover:text-primary-500 hover:bg-gray-100 transition-all font-medium px-4 py-2 rounded-lg border border-transparent hover:border-gray-200">
+                        Features
+                    </a>
+                    <a href="index.html#how-it-works" class="text-gray-600 hover:text-primary-500 hover:bg-gray-100 transition-all font-medium px-4 py-2 rounded-lg border border-transparent hover:border-gray-200">
+                        How It Works
+                    </a>
+                    <a href="index.html#help" class="text-gray-600 hover:text-primary-500 hover:bg-gray-100 transition-all font-medium px-4 py-2 rounded-lg border border-transparent hover:border-gray-200">
+                        Help
+                    </a>
+                    <a href="index.html" class="ml-2 px-6 py-2.5 glow-cta text-white rounded-xl hover:shadow-lg hover:shadow-primary-500/30 transition-all font-semibold transform hover:scale-105">
+                        Get Started
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <ion-icon name="menu-outline" class="text-3xl text-gray-700"></ion-icon>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden border-t border-gray-200 py-4">
+                <div class="flex flex-col space-y-4">
+                    <a href="index.html#features" class="text-gray-600 hover:text-primary-500 transition-colors px-4 font-medium">Features</a>
+                    <a href="index.html#how-it-works" class="text-gray-600 hover:text-primary-500 transition-colors px-4 font-medium">How It Works</a>
+                    <a href="index.html#help" class="text-gray-600 hover:text-primary-500 transition-colors px-4 font-medium">Help</a>
+                    <a href="index.html" class="mx-4 px-6 py-2.5 bg-primary-500 text-white rounded-xl hover:bg-primary-600 transition-all font-semibold text-center shadow-lg shadow-primary-500/30">
+                        Get Started
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Terms of Service</h1>
+        <p class="last-updated">Last updated: January 2025</p>
+
+        <h2>Acceptance of Terms</h2>
+        <p>
+            By installing and using Marketup (the "Extension"), you agree to be bound by these Terms of Service ("Terms").
+            If you do not agree to these Terms, please do not use the Extension.
+        </p>
+
+        <h2>Description of Service</h2>
+        <p>
+            Marketup is a free browser extension that helps users efficiently select Facebook Marketplace groups
+            for their listings by providing keyword-based filtering and automated selection.
+        </p>
+
+        <h2>Use of the Extension</h2>
+
+        <h3>Permitted Use</h3>
+        <p>You may use the Extension to:</p>
+        <ul>
+            <li>Automate the selection of Facebook Marketplace groups based on keyword filters</li>
+            <li>Save and manage filter presets for different types of listings</li>
+            <li>Improve your efficiency when posting to multiple Facebook groups</li>
+        </ul>
+
+        <h3>Prohibited Use</h3>
+        <p>You may NOT use the Extension to:</p>
+        <ul>
+            <li>Violate Facebook's Terms of Service or Community Standards</li>
+            <li>Post spam, inappropriate, or misleading content</li>
+            <li>Circumvent Facebook's posting limits or restrictions</li>
+            <li>Automate actions beyond group selection (the Extension does NOT auto-post)</li>
+            <li>Harass, abuse, or harm other users</li>
+            <li>Reverse engineer, decompile, or modify the Extension code for malicious purposes</li>
+        </ul>
+
+        <h2>Facebook Compliance</h2>
+        <p>
+            <strong>Important:</strong> This Extension is a tool to help you select groups more efficiently.
+            You are solely responsible for ensuring your use of Facebook Marketplace complies with Facebook's:
+        </p>
+        <ul>
+            <li>Terms of Service</li>
+            <li>Community Standards</li>
+            <li>Commerce Policies</li>
+            <li>Group posting rules</li>
+        </ul>
+        <p>
+            The Extension does NOT bypass Facebook's 20-group limit or any other restrictions.
+            It simply helps you select which groups to post to within Facebook's existing interface.
+        </p>
+
+        <h2>Disclaimer of Warranties</h2>
+        <p>
+            THE EXTENSION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
+            We make no guarantees that:
+        </p>
+        <ul>
+            <li>The Extension will work without interruption or errors</li>
+            <li>The Extension will be compatible with all versions of Chrome or Facebook</li>
+            <li>Your use of the Extension will not result in restrictions from Facebook</li>
+            <li>The Extension will meet your specific requirements</li>
+        </ul>
+
+        <h2>Limitation of Liability</h2>
+        <p>
+            To the maximum extent permitted by law, we shall not be liable for any:
+        </p>
+        <ul>
+            <li>Direct, indirect, incidental, or consequential damages</li>
+            <li>Loss of data, revenue, or profits</li>
+            <li>Account restrictions or bans imposed by Facebook</li>
+            <li>Damages resulting from your use or inability to use the Extension</li>
+        </ul>
+        <p>
+            <strong>You use the Extension at your own risk.</strong>
+        </p>
+
+        <h2>Changes to Facebook</h2>
+        <p>
+            Facebook may change its website structure, policies, or features at any time.
+            We will make reasonable efforts to update the Extension to maintain compatibility,
+            but we cannot guarantee the Extension will always work perfectly if Facebook makes changes.
+        </p>
+
+        <h2>No Affiliation</h2>
+        <p>
+            Marketup is an independent tool and is NOT affiliated with, endorsed by, or connected to
+            Facebook, Meta Platforms, Inc., or any of their subsidiaries.
+        </p>
+
+        <h2>Intellectual Property</h2>
+        <p>
+            The Extension is open source and released under the terms specified in the GitHub repository.
+            The source code is available at:
+            <a href="https://github.com/necromindcom/fb-marketplace-autocheck" target="_blank">
+                https://github.com/necromindcom/fb-marketplace-autocheck
+            </a>
+        </p>
+
+        <h2>Privacy</h2>
+        <p>
+            Your privacy is important to us. Please review our
+            <a href="privacy.html">Privacy Policy</a> to understand how the Extension handles data (spoiler: it doesn't collect any).
+        </p>
+
+        <h2>Termination</h2>
+        <p>
+            You may stop using the Extension at any time by uninstalling it from your browser.
+            We reserve the right to discontinue the Extension at any time without notice.
+        </p>
+
+        <h2>Changes to Terms</h2>
+        <p>
+            We may update these Terms from time to time. Continued use of the Extension after changes
+            constitutes acceptance of the new Terms. We will update the "Last updated" date at the top of this page.
+        </p>
+
+        <h2>Governing Law</h2>
+        <p>
+            These Terms shall be governed by and construed in accordance with applicable laws,
+            without regard to conflict of law principles.
+        </p>
+
+        <h2>Severability</h2>
+        <p>
+            If any provision of these Terms is found to be unenforceable, the remaining provisions
+            will continue in full force and effect.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+            Questions about these Terms? Please contact us through our
+            <a href="https://github.com/necromindcom/fb-marketplace-autocheck/issues" target="_blank">GitHub Issues</a> page.
+        </p>
+
+        <h2>Acceptance</h2>
+        <p>
+            By installing and using Marketup, you acknowledge that you have read,
+            understood, and agree to be bound by these Terms of Service.
+        </p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap justify-center gap-8 mb-8">
+                <a href="index.html#features" class="text-gray-400 hover:text-white transition-colors">Features</a>
+                <a href="index.html#how-it-works" class="text-gray-400 hover:text-white transition-colors">How It Works</a>
+                <a href="index.html#help" class="text-gray-400 hover:text-white transition-colors">Help</a>
+                <a href="https://github.com/necromindcom/fb-marketplace-autocheck" target="_blank" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
+                <a href="privacy.html" class="text-gray-400 hover:text-white transition-colors">Privacy</a>
+                <a href="terms.html" class="text-gray-400 hover:text-white transition-colors">Terms</a>
+            </div>
+            <div class="text-center text-gray-400 text-sm">
+                <p>&copy; 2025 Marketup. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Close mobile menu when clicking on a link
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        }
+    </script>
+</body>
+</html>

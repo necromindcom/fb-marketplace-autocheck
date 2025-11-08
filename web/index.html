@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title>Marketup - Automate Facebook Marketplace Group Posting | Browser Extension</title>
+    <meta name="description" content="Save hours posting to Facebook Marketplace groups. Marketup automatically selects up to 20 relevant groups based on your smart keyword filters. Only $1.19/month.">
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Marketup - Automate Facebook Marketplace Group Posting">
+    <meta property="og:description" content="Save hours by automatically posting to up to 20 relevant Facebook Marketplace groups with smart keyword filtering. Only $1.19/month.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://marketup.com/og-image.jpg">
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Marketup - Automate Facebook Marketplace Group Posting">
+    <meta name="twitter:description" content="Save hours by automatically posting to up to 20 relevant Facebook Marketplace groups with smart keyword filtering.">
+    <meta name="twitter:image" content="https://marketup.com/og-image.jpg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="css/output.css">
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.js"></script>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Global Transition Easing */
+        * {
+            transition-duration: 0.3s;
+            transition-timing-function: ease-in-out;
+        }
+
+        /* Animated Blob Gradients */
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            }
+            25% {
+                border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
+            }
+            50% {
+                transform: translate(30px, -30px) rotate(120deg);
+                border-radius: 50% 60% 40% 70% / 60% 40% 60% 40%;
+            }
+            75% {
+                border-radius: 70% 30% 60% 40% / 40% 60% 50% 50%;
+            }
+        }
+
+        @keyframes floatReverse {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+                border-radius: 50% 60% 40% 70% / 60% 40% 60% 40%;
+            }
+            25% {
+                border-radius: 70% 30% 60% 40% / 50% 60% 40% 50%;
+            }
+            50% {
+                transform: translate(-30px, 30px) rotate(-120deg);
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            }
+            75% {
+                border-radius: 60% 40% 50% 60% / 70% 30% 60% 40%;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.9;
+                border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
+            }
+            33% {
+                border-radius: 40% 60% 70% 30% / 60% 40% 50% 60%;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+                border-radius: 50% 60% 40% 70% / 40% 60% 50% 50%;
+            }
+            66% {
+                border-radius: 70% 30% 60% 40% / 50% 40% 60% 50%;
+            }
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(40px);
+            opacity: 1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .blob-reverse {
+            animation: floatReverse 25s ease-in-out infinite;
+        }
+
+        .blob-pulse {
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        /* Global Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, #e7f3ff 0%, #ffffff 30%, #f9fafb 50%, #ffffff 70%, #e7f3ff 100%);
+            z-index: -1;
+        }
+
+        /* Data Flow Lines */
+        @keyframes dataFlow {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 100% 100%;
+            }
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 80px,
+                    rgba(24, 119, 242, 0.15) 80px,
+                    rgba(24, 119, 242, 0.25) 85px,
+                    rgba(24, 119, 242, 0.08) 90px,
+                    transparent 95px,
+                    transparent 180px,
+                    rgba(147, 51, 234, 0.12) 180px,
+                    rgba(147, 51, 234, 0.20) 185px,
+                    rgba(147, 51, 234, 0.06) 190px,
+                    transparent 195px
+                );
+            background-size: 400px 100%;
+            animation: dataFlow 15s linear infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Scroll Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Glow Effect for CTA */
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(24, 119, 242, 0.4), 0 0 40px rgba(24, 119, 242, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(24, 119, 242, 0.6), 0 0 60px rgba(24, 119, 242, 0.3); }
+        }
+
+        .glow-cta {
+            background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .glow-cta::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .glow-cta:hover {
+            background: linear-gradient(135deg, #166fe5 0%, #1567d3 100%);
+            box-shadow: 0 8px 30px rgba(24, 119, 242, 0.4);
+        }
+
+        /* Step Badge */
+        .step-badge {
+            background: rgba(24, 119, 242, 0.1);
+            border: 1px solid rgba(24, 119, 242, 0.3);
+            color: #1877f2;
+            position: relative;
+        }
+
+        /* Step Icon Gradient */
+        .step-icon {
+            background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .step-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.15));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .step-icon::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            border-radius: inherit;
+            background-image:
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Animated Grid Background */
+        @keyframes gridMove {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 50px 50px;
+            }
+        }
+
+        .animated-grid::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(24, 119, 242, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(24, 119, 242, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* White Grid for CTA */
+        .bg-primary-500.animated-grid::after {
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        }
+
+        /* Animated Curves */
+        @keyframes curvesMove {
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+            50% {
+                transform: translateX(-25px) translateY(-15px);
+            }
+            100% {
+                transform: translateX(0) translateY(0);
+            }
+        }
+
+        .animated-curves {
+            position: relative;
+        }
+
+        .animated-curves::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(ellipse 800px 400px at 0% 0%, transparent 40%, rgba(24, 119, 242, 0.03) 41%, rgba(24, 119, 242, 0.03) 43%, transparent 44%),
+                radial-gradient(ellipse 700px 350px at 100% 50%, transparent 40%, rgba(96, 165, 250, 0.04) 41%, rgba(96, 165, 250, 0.04) 43%, transparent 44%),
+                radial-gradient(ellipse 600px 300px at 0% 100%, transparent 40%, rgba(147, 197, 253, 0.03) 41%, rgba(147, 197, 253, 0.03) 43%, transparent 44%);
+            animation: curvesMove 15s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Rotating Vertical Lines */
+        @keyframes rotateLines {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .rotating-lines::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            transform-origin: center;
+            background-image:
+                linear-gradient(90deg, transparent 0%, transparent calc(50% - 0.5px), rgba(255, 255, 255, 0.06) calc(50% - 0.5px), rgba(255, 255, 255, 0.06) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+                linear-gradient(90deg, transparent 0%, transparent calc(25% - 0.5px), rgba(255, 255, 255, 0.04) calc(25% - 0.5px), rgba(255, 255, 255, 0.04) calc(25% + 0.5px), transparent calc(25% + 0.5px)),
+                linear-gradient(90deg, transparent 0%, transparent calc(75% - 0.5px), rgba(255, 255, 255, 0.04) calc(75% - 0.5px), rgba(255, 255, 255, 0.04) calc(75% + 0.5px), transparent calc(75% + 0.5px));
+            animation: rotateLines 60s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 3D Perspective Grid */
+        @keyframes gridFloat {
+            0%, 100% {
+                transform: perspective(1000px) rotateX(60deg) translateY(0px);
+            }
+            50% {
+                transform: perspective(1000px) rotateX(60deg) translateY(-10px);
+            }
+        }
+
+        .perspective-grid::before {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            left: 50%;
+            width: 200%;
+            height: 100%;
+            transform: perspective(600px) rotateX(60deg) translateX(-50%);
+            transform-origin: bottom;
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 48px,
+                    rgba(255, 255, 255, 0.25) 48px,
+                    rgba(255, 255, 255, 0.25) 50px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 48px,
+                    rgba(255, 255, 255, 0.25) 48px,
+                    rgba(255, 255, 255, 0.25) 50px
+                );
+            background-size: 50px 50px;
+            animation: gridFloat 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 1;
+            mask-image: linear-gradient(to top, rgba(0,0,0,0.9) 0%, black 20%, black 60%, transparent 100%);
+        }
+
+        /* 3D Tilt Effect */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .tilt-card:hover {
+            transform: perspective(1000px) rotateX(2deg) rotateY(5deg) scale(1.02);
+        }
+
+        /* Icon Bounce Animation */
+        .icon-bounce:hover {
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Card Blob Backgrounds */
+        .card-blob {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-blob::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(24, 119, 242, 0.04) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -40px;
+            right: -40px;
+            z-index: 0;
+        }
+
+        .card-blob::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.03) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -30px;
+            left: -30px;
+            z-index: 0;
+        }
+
+        /* Icon Box Blob */
+        .icon-blob {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .icon-blob::before {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, rgba(24, 119, 242, 0.25) 0%, rgba(96, 165, 250, 0.15) 50%, transparent 70%);
+            border-radius: 50%;
+            top: -10px;
+            right: -10px;
+            z-index: 0;
+        }
+
+        .icon-blob::after {
+            content: '';
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -8px;
+            left: -8px;
+            z-index: 0;
+        }
+
+        /* Button Blob */
+        .btn-blob {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-blob::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -30px;
+            right: -30px;
+            z-index: 0;
+        }
+
+        .btn-blob::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -25px;
+            left: -25px;
+            z-index: 0;
+        }
+
+        .btn-blob > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Badge Blob */
+        .badge-blob {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge-blob::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -20px;
+            right: -20px;
+            z-index: 0;
+        }
+
+        /* Grid Pattern Overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle, rgba(24, 119, 242, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Gradient Border Cards */
+
+        /* Decorative Shapes */
+        .decorative-circle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(100px);
+        }
+
+        /* Card Hover Effect */
+        .card-hover {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Colored Shadows */
+        .shadow-primary {
+            box-shadow: 0 10px 40px rgba(24, 119, 242, 0.15);
+        }
+
+        .shadow-purple {
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.15);
+        }
+
+        .shadow-pink {
+            box-shadow: 0 10px 40px rgba(147, 51, 234, 0.15);
+        }
+
+
+        /* Floating Sparkles */
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkle-float 8s infinite ease-in-out;
+        }
+
+        @keyframes sparkle-float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 1;
+            }
+        }
+
+        /* Geometric Shapes */
+        .geo-shape {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0;
+            animation: shape-float 20s infinite ease-in-out;
+        }
+
+        .geo-circle {
+            border: 2px solid rgba(24, 119, 242, 0.2);
+            border-radius: 50%;
+        }
+
+        .geo-square {
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .geo-triangle {
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 52px solid rgba(118, 75, 162, 0.15);
+        }
+
+        @keyframes shape-float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            50% {
+                transform: translate(var(--tx), var(--ty)) rotate(var(--rot, 180deg));
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.4;
+            }
+        }
+
+        /* Badge Pulse */
+        .badge-pulse {
+            animation: badge-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badge-pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(24, 119, 242, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(24, 119, 242, 0);
+            }
+        }
+
+        /* Timeline Line Reveal */
+        .timeline-line {
+            opacity: 0;
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: opacity 1.5s ease-out 0.5s, transform 1.5s ease-out 0.5s;
+        }
+
+        .timeline-line.visible {
+            opacity: 0.5;
+            transform: scaleY(1);
+        }
+
+        /* Shimmer Effect */
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shimmer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* FAQ Accordion Slide Animation */
+        details {
+            cursor: pointer;
+        }
+
+        details summary {
+            list-style: none;
+            cursor: pointer;
+        }
+
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details .faq-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out;
+        }
+
+        details[open] .faq-content {
+            grid-template-rows: 1fr;
+        }
+
+        details .faq-content > div {
+            overflow: hidden;
+        }
+
+        details summary ion-icon {
+            transition: transform 0.3s ease-out;
+        }
+
+        details[open] summary ion-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="text-gray-900 relative">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="w-11 h-11 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
+                        <ion-icon name="storefront-outline" class="text-white text-2xl"></ion-icon>
+                    </div>
+                    <span class="text-xl sm:text-2xl font-bold tracking-tight" style="font-family: 'Poppins', sans-serif;">Market<span class="text-primary-500">up</span></span>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-2">
+                    <a href="#features" class="text-gray-600 hover:text-primary-500 hover:bg-gray-100 transition-all font-medium px-4 py-2 rounded-lg border border-transparent hover:border-gray-200">
+                        Features
+                    </a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-primary-500 hover:bg-gray-100 transition-all font-medium px-4 py-2 rounded-lg border border-transparent hover:border-gray-200">
+                        How It Works
+                    </a>
+                    <a href="#help" class="text-gray-600 hover:text-primary-500 hover:bg-gray-100 transition-all font-medium px-4 py-2 rounded-lg border border-transparent hover:border-gray-200">
+                        Help
+                    </a>
+                    <a href="#" class="ml-2 px-6 py-2.5 glow-cta text-white rounded-xl hover:shadow-lg hover:shadow-primary-500/30 transition-all font-semibold transform hover:scale-105">
+                        Get Started
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <ion-icon name="menu-outline" class="text-3xl text-gray-700"></ion-icon>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden border-t border-gray-200 py-4">
+                <div class="flex flex-col space-y-4">
+                    <a href="#features" class="text-gray-600 hover:text-primary-500 transition-colors px-4 font-medium">Features</a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-primary-500 transition-colors px-4 font-medium">How It Works</a>
+                    <a href="#help" class="text-gray-600 hover:text-primary-500 transition-colors px-4 font-medium">Help</a>
+                    <a href="#" class="mx-4 px-6 py-2.5 bg-primary-500 text-white rounded-xl hover:bg-primary-600 transition-all font-semibold text-center shadow-lg shadow-primary-500/30">
+                        Get Started
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-28 pb-16 md:pt-32 md:pb-16 overflow-hidden">
+        <!-- Animated Blobs -->
+        <div class="blob right-10 w-[500px] h-[500px] bg-primary-200" style="top: -150px;"></div>
+        <div class="blob blob-reverse right-1/3 w-[400px] h-[400px] bg-blue-200" style="top: 100px;"></div>
+        <div class="blob blob-pulse left-10 w-[450px] h-[450px] bg-primary-100" style="bottom: -150px;"></div>
+        <div class="blob right-20 w-[350px] h-[350px] bg-blue-100" style="bottom: 50px;"></div>
+        <div class="blob left-1/3 w-[380px] h-[380px] bg-purple-200" style="top: 50px; animation-delay: -3s;"></div>
+        <div class="blob blob-reverse right-1/4 w-[320px] h-[320px] bg-purple-200" style="bottom: 100px; animation-delay: -6s;"></div>
+
+        <!-- Decorative Circles -->
+        <div class="decorative-circle w-32 h-32 bg-gradient-to-br from-purple-400/10 to-purple-500/10 absolute" style="top: 20%; left: 10%;"></div>
+        <div class="decorative-circle w-24 h-24 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 absolute" style="top: 60%; right: 15%;"></div>
+        <div class="decorative-circle w-20 h-20 bg-gradient-to-br from-yellow-300/20 to-orange-300/20 absolute" style="bottom: 30%; left: 20%;"></div>
+
+        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-4 lg:gap-12 items-center">
+                <!-- Left Content -->
+                <div class="text-center lg:text-left">
+                    <div class="badge-pulse inline-flex items-center space-x-2 px-4 py-2 bg-primary-100 rounded-full text-primary-600 text-sm font-medium mb-4">
+                        <ion-icon name="star" class="text-base"></ion-icon>
+                        <span>Only $1.19/month</span>
+                    </div>
+
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 lg:mb-6 leading-tight">
+                        Automate <ion-icon name="logo-facebook" class="text-primary-500 align-middle" style="font-size: 0.9em;"></ion-icon> Marketplace<br>
+                        <span class="text-primary-500">Group Posting</span>
+                    </h1>
+
+                    <p class="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 lg:mb-8 leading-relaxed">
+                        Save hours by automatically posting your listings to up to 20 relevant groups at once. Smart keyword filtering finds the perfect groups for you.
+                    </p>
+
+                    <div class="hidden lg:block">
+                        <a href="#" class="glow-cta inline-flex items-center justify-center space-x-2 px-8 py-4 text-white rounded-xl transition-all transform hover:scale-105 font-semibold shadow-lg shadow-primary-500/30">
+                            <ion-icon name="download-outline" class="text-xl"></ion-icon>
+                            <span>Get Started Now</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Content - Video Preview -->
+                <div class="relative">
+                    <button id="videoPreviewBtn" class="relative group w-full">
+                        <div class="aspect-video rounded-2xl overflow-hidden shadow-2xl ring-1 ring-gray-200">
+                            <video class="w-full h-full object-cover rounded-2xl" muted>
+                                <source src="video.mp4" type="video/mp4">
+                            </video>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                                    <ion-icon name="play" class="text-4xl text-primary-500 ml-1"></ion-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- Mobile CTA Button - Shows only on mobile below video -->
+                    <div class="mt-6 mb-4 lg:hidden flex justify-center">
+                        <a href="#" class="glow-cta inline-flex items-center justify-center space-x-2 px-8 py-4 text-white rounded-xl transition-all transform hover:scale-105 font-semibold shadow-lg shadow-primary-500/30 w-full">
+                            <ion-icon name="download-outline" class="text-xl"></ion-icon>
+                            <span>Get Started Now</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats - Full Width -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-6 mt-6 md:mt-12 pt-8 md:pt-8 pb-8 md:pb-8 border-t border-b border-gray-200">
+                <div class="flex flex-col items-center">
+                    <ion-icon name="time-outline" class="text-4xl text-primary-500 mb-2"></ion-icon>
+                    <div class="text-xl font-bold text-gray-900 mb-1">Save Hours</div>
+                    <div class="text-sm text-gray-600 text-center">Automate manual work</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <ion-icon name="people-outline" class="text-4xl text-primary-500 mb-2"></ion-icon>
+                    <div class="text-xl font-bold text-gray-900 mb-1">20 Groups</div>
+                    <div class="text-sm text-gray-600 text-center">Select at once</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <ion-icon name="flash-outline" class="text-4xl text-primary-500 mb-2"></ion-icon>
+                    <div class="text-xl font-bold text-gray-900 mb-1">Smart Filter</div>
+                    <div class="text-sm text-gray-600 text-center">Keyword matching</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <ion-icon name="bookmark-outline" class="text-4xl text-primary-500 mb-2"></ion-icon>
+                    <div class="text-xl font-bold text-gray-900 mb-1">Save Presets</div>
+                    <div class="text-sm text-gray-600 text-center">Reuse filters easily</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <ion-icon name="extension-puzzle-outline" class="text-4xl text-primary-500 mb-2"></ion-icon>
+                    <div class="text-xl font-bold text-gray-900 mb-1">Browser Extension</div>
+                    <div class="text-sm text-gray-600 text-center">One-click install</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Bento Grid -->
+    <section id="features" class="relative pt-12 pb-16 overflow-hidden">
+        <div class="absolute inset-0" style="transform: scaleY(-1);">
+            <!-- Animated Blobs -->
+            <div class="blob right-10 w-[500px] h-[500px] bg-primary-200" style="top: -150px;"></div>
+            <div class="blob blob-reverse right-1/3 w-[400px] h-[400px] bg-blue-200" style="top: 100px;"></div>
+            <div class="blob blob-pulse left-10 w-[450px] h-[450px] bg-primary-100" style="bottom: -150px;"></div>
+            <div class="blob right-20 w-[350px] h-[350px] bg-blue-100" style="bottom: 50px;"></div>
+            <div class="blob left-1/3 w-[380px] h-[380px] bg-pink-200" style="top: 50px; animation-delay: -3s;"></div>
+            <div class="blob blob-reverse right-1/4 w-[320px] h-[320px] bg-pink-200" style="bottom: 100px; animation-delay: -6s;"></div>
+
+            <!-- Decorative Circles -->
+            <div class="decorative-circle w-32 h-32 bg-gradient-to-br from-purple-400/10 to-purple-500/10 absolute" style="top: 20%; left: 10%;"></div>
+            <div class="decorative-circle w-24 h-24 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 absolute" style="top: 60%; right: 15%;"></div>
+            <div class="decorative-circle w-20 h-20 bg-gradient-to-br from-yellow-300/20 to-orange-300/20 absolute" style="bottom: 30%; left: 20%;"></div>
+        </div>
+
+        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 md:mb-16 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-3 md:mb-4">Everything You Need</h2>
+                <p class="text-lg md:text-xl text-gray-600">Powerful features to automate your workflow</p>
+            </div>
+
+            <!-- Bento Grid Layout -->
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-4">
+                <!-- Large Feature 1 -->
+                <div class="md:col-span-4 bg-primary-500 rounded-3xl p-6 md:p-8 text-white relative overflow-hidden fade-in text-center md:text-left">
+                    <div class="absolute top-0 right-0 w-96 h-80 bg-primary-400/40 blur-3xl" style="border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: translateX(30%);"></div>
+                    <div class="absolute bottom-0 right-0 w-80 h-72 bg-blue-300/30 blur-3xl" style="border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%; transform: translateX(20%);"></div>
+                    <div class="absolute top-1/3 right-5 w-72 h-64 bg-pink-300/10 blur-3xl" style="border-radius: 50% 60% 40% 70% / 60% 40% 60% 40%;"></div>
+
+                    <div class="relative z-10">
+                        <ion-icon name="flash" class="text-5xl mb-4 icon-bounce"></ion-icon>
+                        <h3 class="text-2xl md:text-3xl font-bold mb-3">Smart Keyword Filtering</h3>
+                        <p class="text-white/90 text-base md:text-lg mb-6">Automatically find the most relevant groups using include and exclude keywords. No more manual scrolling through hundreds of options.</p>
+                        <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                            <span class="px-3 py-1 bg-white/20 rounded-full text-sm">Include keywords</span>
+                            <span class="px-3 py-1 bg-white/20 rounded-full text-sm">Exclude keywords</span>
+                            <span class="px-3 py-1 bg-white/20 rounded-full text-sm">Auto-select</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="card-hover md:col-span-2 bg-white/60 backdrop-blur-2xl rounded-3xl p-6 md:p-8 shadow-primary fade-in border border-white/80 text-center md:text-left card-blob">
+                    <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mb-4 mx-auto md:mx-0 icon-blob">
+                        <ion-icon name="bookmark" class="text-2xl text-primary-500 icon-bounce"></ion-icon>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Save Presets</h3>
+                    <p class="text-gray-600">Create unlimited filter presets for different product types</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="card-hover md:col-span-2 bg-white/60 backdrop-blur-2xl rounded-3xl p-6 md:p-8 shadow-purple fade-in border border-white/80 text-center md:text-left card-blob">
+                    <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mb-4 mx-auto md:mx-0 icon-blob">
+                        <ion-icon name="list" class="text-2xl text-primary-500 icon-bounce"></ion-icon>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Prioritization</h3>
+                    <p class="text-gray-600">Choose which groups to post to when over 20 match</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="card-hover md:col-span-2 bg-white/60 backdrop-blur-2xl rounded-3xl p-6 md:p-8 shadow-pink fade-in border border-white/80 text-center md:text-left card-blob">
+                    <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mb-4 mx-auto md:mx-0 icon-blob">
+                        <ion-icon name="bar-chart" class="text-2xl text-primary-500 icon-bounce"></ion-icon>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Live Counter</h3>
+                    <p class="text-gray-600">Real-time tracking of selected groups (X/20)</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="card-hover md:col-span-2 bg-white/60 backdrop-blur-2xl rounded-3xl p-6 md:p-8 shadow-primary fade-in border border-white/80 text-center md:text-left card-blob">
+                    <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mb-4 mx-auto md:mx-0 icon-blob">
+                        <ion-icon name="shield-checkmark" class="text-2xl text-primary-500 icon-bounce"></ion-icon>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Privacy First</h3>
+                    <p class="text-gray-600">All processing happens locally in your browser</p>
+                </div>
+
+                <!-- Large Feature 6 -->
+                <div class="md:col-span-3 bg-gray-900 rounded-3xl p-6 md:p-8 text-white fade-in text-center md:text-left relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-primary-500/20 rounded-full blur-3xl"></div>
+                    <div class="absolute bottom-0 left-0 w-56 h-56 bg-purple-800/15 rounded-full blur-3xl"></div>
+                    <div class="relative z-10">
+                        <ion-icon name="language" class="text-4xl mb-4 icon-bounce"></ion-icon>
+                    <h3 class="text-2xl font-bold mb-3">Multi-Language</h3>
+                    <p class="text-gray-300 mb-6">Works with Czech, Slovak, and any special characters with smart text normalization</p>
+                    <div class="flex gap-2 text-sm justify-center md:justify-start">
+                        <span class="px-3 py-1 bg-white/10 rounded-full">čšžříťňďě</span>
+                        <span class="px-3 py-1 bg-white/10 rounded-full">áéíóúůý</span>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Feature 7 -->
+                <div class="md:col-span-3 bg-primary-50 rounded-3xl p-6 md:p-8 border border-primary-100 fade-in text-center md:text-left relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-primary-200/50 rounded-full blur-3xl"></div>
+                    <div class="absolute bottom-0 left-0 w-56 h-56 bg-blue-200/40 rounded-full blur-3xl"></div>
+                    <div class="relative z-10">
+                        <ion-icon name="pricetag" class="text-4xl text-primary-500 mb-4 icon-bounce"></ion-icon>
+                    <h3 class="text-2xl font-bold mb-3">Affordable Pricing</h3>
+                    <p class="text-gray-700 mb-4">Just $1.19/month for unlimited access to all features</p>
+                    <a href="#" class="inline-flex items-center text-primary-600 font-semibold hover:text-primary-700">
+                        Get started now
+                        <ion-icon name="arrow-forward" class="ml-2"></ion-icon>
+                    </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works - Timeline -->
+    <section id="how-it-works" class="relative pt-12 pb-16 overflow-hidden">
+        <!-- Animated Blobs - continuation from Features section -->
+        <div class="blob right-10 w-[500px] h-[500px] bg-primary-200" style="top: -150px;"></div>
+        <div class="blob blob-reverse right-1/3 w-[400px] h-[400px] bg-blue-200" style="top: 100px;"></div>
+        <div class="blob blob-pulse left-10 w-[450px] h-[450px] bg-primary-100" style="bottom: -150px;"></div>
+        <div class="blob right-20 w-[350px] h-[350px] bg-blue-100" style="bottom: 50px;"></div>
+        <div class="blob left-1/3 w-[380px] h-[380px] bg-purple-200" style="top: 50px; animation-delay: -3s;"></div>
+        <div class="blob blob-reverse right-1/4 w-[320px] h-[320px] bg-purple-200" style="bottom: 100px; animation-delay: -6s;"></div>
+
+        <!-- Decorative Circles -->
+        <div class="decorative-circle w-32 h-32 bg-gradient-to-br from-purple-400/10 to-purple-500/10 absolute" style="top: 20%; left: 10%;"></div>
+        <div class="decorative-circle w-24 h-24 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 absolute" style="top: 60%; right: 15%;"></div>
+        <div class="decorative-circle w-20 h-20 bg-gradient-to-br from-yellow-300/20 to-orange-300/20 absolute" style="bottom: 30%; left: 20%;"></div>
+
+        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 md:mb-16 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-3 md:mb-4">How It Works</h2>
+                <p class="text-lg md:text-xl text-gray-600">Get started in 4 simple steps</p>
+            </div>
+
+            <!-- Timeline -->
+            <div class="relative space-y-4 md:space-y-16">
+                <!-- Vertical Dashed Line (Desktop) -->
+                <div class="timeline-line hidden md:block absolute left-1/2 -translate-x-1/2" style="top: 100px; bottom: 100px; width: 2px; background: repeating-linear-gradient(to bottom, #1877f2 0px, #1877f2 8px, transparent 8px, transparent 16px);"></div>
+
+                <!-- Step 1 -->
+                <div class="relative flex flex-col md:flex-row items-center gap-6 md:gap-8 fade-in">
+                    <div class="flex-1 text-center md:text-right">
+                        <div class="card-hover bg-white/70 backdrop-blur-2xl rounded-2xl p-6 md:p-8 shadow-xl border border-primary-100 relative overflow-hidden card-blob">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-primary-500/5 rounded-full blur-2xl"></div>
+                            <div class="relative">
+                                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold mb-4 step-badge">
+                                    <ion-icon name="download-outline" class="text-xl md:hidden"></ion-icon>
+                                    <span>01</span>
+                                    <span>•</span>
+                                    <span>Install</span>
+                                </div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 md:mb-3">Install Extension</h3>
+                                <p class="text-gray-600">Add Marketup to your browser with one click. No signup required.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 hidden md:flex">
+                        <div class="w-20 h-20 bg-primary-100 rounded-2xl flex items-center justify-center font-bold text-3xl shadow-2xl shadow-primary-500/40 relative z-10 icon-blob">
+                            <ion-icon name="download-outline" class="text-4xl text-primary-500 relative z-10"></ion-icon>
+                        </div>
+                    </div>
+                    <div class="flex-1 hidden md:block"></div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative flex flex-col md:flex-row items-center gap-6 md:gap-8 fade-in">
+                    <div class="flex-1 hidden md:block"></div>
+                    <div class="flex-shrink-0 hidden md:flex">
+                        <div class="w-20 h-20 bg-primary-100 rounded-2xl flex items-center justify-center font-bold text-3xl shadow-2xl shadow-primary-500/40 relative z-10 icon-blob">
+                            <ion-icon name="storefront-outline" class="text-4xl text-primary-500 relative z-10"></ion-icon>
+                        </div>
+                    </div>
+                    <div class="flex-1 text-center md:text-left">
+                        <div class="card-hover bg-white/70 backdrop-blur-2xl rounded-2xl p-6 md:p-8 shadow-xl border border-primary-100 relative overflow-hidden card-blob">
+                            <div class="absolute top-0 left-0 w-32 h-32 bg-primary-500/5 rounded-full blur-2xl"></div>
+                            <div class="relative">
+                                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold mb-4 step-badge">
+                                    <ion-icon name="storefront-outline" class="text-xl md:hidden"></ion-icon>
+                                    <span>02</span>
+                                    <span>•</span>
+                                    <span>Navigate</span>
+                                </div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 md:mb-3">Open Marketplace</h3>
+                                <p class="text-gray-600">Go to your listing and click "..." → "Add to multiple places"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative flex flex-col md:flex-row items-center gap-6 md:gap-8 fade-in">
+                    <div class="flex-1 text-center md:text-right">
+                        <div class="card-hover bg-white/70 backdrop-blur-2xl rounded-2xl p-6 md:p-8 shadow-xl border border-primary-100 relative overflow-hidden card-blob">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-primary-500/5 rounded-full blur-2xl"></div>
+                            <div class="relative">
+                                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold mb-4 step-badge">
+                                    <ion-icon name="options-outline" class="text-xl md:hidden"></ion-icon>
+                                    <span>03</span>
+                                    <span>•</span>
+                                    <span>Configure</span>
+                                </div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 md:mb-3">Set Your Filters</h3>
+                                <p class="text-gray-600">Enter keywords to include and exclude to find relevant groups</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 hidden md:flex">
+                        <div class="w-20 h-20 bg-primary-100 rounded-2xl flex items-center justify-center font-bold text-3xl shadow-2xl shadow-primary-500/40 relative z-10 icon-blob">
+                            <ion-icon name="options-outline" class="text-4xl text-primary-500 relative z-10"></ion-icon>
+                        </div>
+                    </div>
+                    <div class="flex-1 hidden md:block"></div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="relative flex flex-col md:flex-row items-center gap-6 md:gap-8 fade-in">
+                    <div class="flex-1 hidden md:block"></div>
+                    <div class="flex-shrink-0 hidden md:flex">
+                        <div class="w-20 h-20 bg-primary-100 rounded-2xl flex items-center justify-center font-bold text-3xl shadow-2xl shadow-primary-500/40 relative z-10 icon-blob">
+                            <ion-icon name="checkmark-done-outline" class="text-4xl text-primary-500 relative z-10"></ion-icon>
+                        </div>
+                    </div>
+                    <div class="flex-1 text-center md:text-left">
+                        <div class="card-hover bg-white/70 backdrop-blur-2xl rounded-2xl p-6 md:p-8 shadow-xl border border-primary-100 relative overflow-hidden card-blob">
+                            <div class="absolute top-0 left-0 w-32 h-32 bg-primary-500/5 rounded-full blur-2xl"></div>
+                            <div class="relative">
+                                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold mb-4 step-badge">
+                                    <ion-icon name="checkmark-done-outline" class="text-xl md:hidden"></ion-icon>
+                                    <span>04</span>
+                                    <span>•</span>
+                                    <span>Complete</span>
+                                </div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2 md:mb-3">Run & Done!</h3>
+                                <p class="text-gray-600">Click "Run Checker" and watch the magic happen automatically</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="pt-16 pb-16 bg-primary-500 text-white relative overflow-hidden">
+        <!-- Animated Blobs -->
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-white/10 blur-3xl" style="border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; animation: float 20s ease-in-out infinite; z-index: 2;"></div>
+        <div class="absolute bottom-0 left-0 w-[550px] h-[550px] bg-blue-200/15 blur-3xl" style="border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%; animation: floatReverse 25s ease-in-out infinite; animation-delay: -5s; z-index: 2;"></div>
+        <div class="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-purple-800/15 blur-3xl" style="border-radius: 50% 60% 40% 70% / 60% 40% 60% 40%; animation: pulse 15s ease-in-out infinite; animation-delay: -8s; z-index: 2;"></div>
+
+        <!-- Radial Highlights -->
+        <div class="absolute top-20 left-20 w-80 h-80 bg-white/15 rounded-full blur-2xl" style="z-index: 2;"></div>
+        <div class="absolute bottom-20 right-20 w-72 h-72 bg-blue-100/20 rounded-full blur-2xl" style="z-index: 2;"></div>
+
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center" style="z-index: 10;">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                Ready to Save Hours?
+            </h2>
+            <p class="text-xl text-white/90 mb-10">
+                Join thousands of sellers who automate their Facebook Marketplace posting
+            </p>
+            <a href="#" class="inline-flex items-center space-x-3 px-10 py-5 bg-white text-primary-600 rounded-xl font-bold text-lg shadow-2xl hover:scale-105 transition-all relative overflow-hidden border-2 border-white/20">
+                <span class="flex items-center space-x-3">
+                    <ion-icon name="download-outline" class="text-2xl"></ion-icon>
+                    <span>Get Started - Only $1.19/month</span>
+                </span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Help Section -->
+    <section id="help" class="relative pt-12 pb-16 overflow-hidden">
+        <!-- Animated Blobs -->
+        <div class="blob blob-reverse left-0 w-[450px] h-[450px] bg-primary-200" style="animation-delay: -6s; top: -150px;"></div>
+        <div class="blob right-0 w-[400px] h-[400px] bg-blue-200" style="animation-delay: -9s; bottom: -150px;"></div>
+        <div class="blob blob-pulse left-1/4 w-[380px] h-[380px] bg-purple-200" style="top: 20%; animation-delay: -3s;"></div>
+        <div class="blob right-1/4 w-[350px] h-[350px] bg-purple-200" style="bottom: 20%; animation-delay: -7s;"></div>
+
+        <!-- Decorative Circles -->
+        <div class="decorative-circle w-32 h-32 bg-gradient-to-br from-yellow-300/20 to-orange-300/20 absolute" style="top: 10%; left: 5%;"></div>
+        <div class="decorative-circle w-20 h-20 bg-gradient-to-br from-green-300/20 to-emerald-300/20 absolute" style="bottom: 25%; right: 8%;"></div>
+
+        <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 md:mb-16 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-3 md:mb-4">Frequently Asked Questions</h2>
+                <p class="text-lg md:text-xl text-gray-600">Everything you need to know</p>
+            </div>
+
+            <div class="space-y-3 md:space-y-4">
+                <details class="card-hover gradient-border bg-white/60 backdrop-blur-2xl rounded-2xl p-6 shadow-primary fade-in border border-white/80 card-blob">
+                    <summary class="flex items-center justify-between cursor-pointer font-semibold text-lg">
+                        <span>What does this extension do?</span>
+                        <ion-icon name="chevron-down" class="text-2xl"></ion-icon>
+                    </summary>
+                    <div class="faq-content">
+                        <div>
+                            <p class="mt-4 text-gray-600 leading-relaxed">
+                                Marketup automatically selects up to 20 Facebook groups for your Marketplace listing based on keyword filters you set. Instead of manually scrolling through hundreds of groups, the extension finds and checks the most relevant ones in seconds.
+                            </p>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="card-hover gradient-border bg-white/60 backdrop-blur-2xl rounded-2xl p-6 shadow-purple fade-in border border-white/80 card-blob">
+                    <summary class="flex items-center justify-between cursor-pointer font-semibold text-lg">
+                        <span>How much does it cost?</span>
+                        <ion-icon name="chevron-down" class="text-2xl"></ion-icon>
+                    </summary>
+                    <div class="faq-content">
+                        <div>
+                            <p class="mt-4 text-gray-600 leading-relaxed">
+                                Marketup costs just <strong>$1.19 per month</strong>. This affordable subscription gives you unlimited access to all features including smart filtering, unlimited presets, and priority support. Cancel anytime with no questions asked.
+                            </p>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="card-hover gradient-border bg-white/60 backdrop-blur-2xl rounded-2xl p-6 shadow-pink fade-in border border-white/80 card-blob">
+                    <summary class="flex items-center justify-between cursor-pointer font-semibold text-lg">
+                        <span>Is my data safe and private?</span>
+                        <ion-icon name="chevron-down" class="text-2xl"></ion-icon>
+                    </summary>
+                    <div class="faq-content">
+                        <div>
+                            <p class="mt-4 text-gray-600 leading-relaxed">
+                                Absolutely! All processing happens locally in your browser. The extension only interacts with Facebook's page that's already open. No data is sent to external servers, and your listings remain completely private.
+                            </p>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap justify-center gap-8 mb-8">
+                <a href="#features" class="text-gray-400 hover:text-white transition-colors">Features</a>
+                <a href="#how-it-works" class="text-gray-400 hover:text-white transition-colors">How It Works</a>
+                <a href="#help" class="text-gray-400 hover:text-white transition-colors">Help</a>
+                <a href="https://github.com/necromindcom/fb-marketplace-autocheck" target="_blank" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
+                <a href="privacy.html" class="text-gray-400 hover:text-white transition-colors">Privacy</a>
+                <a href="terms.html" class="text-gray-400 hover:text-white transition-colors">Terms</a>
+            </div>
+            <div class="text-center text-gray-400 text-sm">
+                <p>&copy; 2025 Marketup. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 opacity-0 transition-opacity duration-300" style="backdrop-filter: blur(4px);">
+        <div class="relative w-full max-w-5xl bg-black rounded-2xl overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300">
+            <button id="closeVideoModal" class="absolute top-4 right-4 z-10 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
+                <ion-icon name="close" class="text-2xl text-white"></ion-icon>
+            </button>
+            <video id="modalVideo" class="w-full" controls>
+                <source src="video.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking on a link
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Video Modal
+        const videoModal = document.getElementById('videoModal');
+        const modalVideo = document.getElementById('modalVideo');
+        const videoPreviewBtn = document.getElementById('videoPreviewBtn');
+        const closeVideoModal = document.getElementById('closeVideoModal');
+        const modalContent = videoModal.querySelector('.relative');
+
+        function openVideo() {
+            videoModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            // Trigger fade-in and scale animation
+            setTimeout(() => {
+                videoModal.classList.remove('opacity-0');
+                videoModal.classList.add('opacity-100');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+
+            setTimeout(() => {
+                modalVideo.play();
+            }, 300);
+        }
+
+        function closeVideo() {
+            videoModal.classList.remove('opacity-100');
+            videoModal.classList.add('opacity-0');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+
+            modalVideo.pause();
+            modalVideo.currentTime = 0;
+
+            setTimeout(() => {
+                videoModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        videoPreviewBtn?.addEventListener('click', openVideo);
+        closeVideoModal?.addEventListener('click', closeVideo);
+
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) closeVideo();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !videoModal.classList.contains('hidden')) {
+                closeVideo();
+            }
+        });
+
+        // Scroll Observer for Fade-in Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Timeline Line Observer
+        document.querySelectorAll('.timeline-line').forEach(el => observer.observe(el));
+
+        // Animated Counters
+        function animateCounter(element) {
+            const target = parseFloat(element.dataset.count);
+            const isDecimal = target % 1 !== 0;
+            const duration = 2000;
+            const steps = 60;
+            const increment = target / steps;
+            let current = 0;
+            const stepDuration = duration / steps;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+
+                if (element.textContent.includes('x')) {
+                    element.textContent = Math.floor(current) + 'x';
+                } else if (element.textContent.includes('$')) {
+                    element.textContent = '$' + (isDecimal ? current.toFixed(2) : Math.floor(current));
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, stepDuration);
+        }
+
+        // Trigger counters on scroll
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.dataset.counted) {
+                    entry.target.dataset.counted = 'true';
+                    animateCounter(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+
+        // FAQ Accordion - Only one open at a time
+        const allDetails = document.querySelectorAll('details');
+
+        allDetails.forEach(details => {
+            details.addEventListener('click', (e) => {
+                // If clicking on the summary, let it handle the toggle
+                if (e.target.closest('summary')) {
+                    // Close all other details when opening this one
+                    if (!details.open) {
+                        allDetails.forEach(otherDetails => {
+                            if (otherDetails !== details) {
+                                otherDetails.open = false;
+                            }
+                        });
+                    }
+                    return;
+                }
+
+                // If clicking on content area, toggle the details
+                e.preventDefault();
+                const willOpen = !details.open;
+
+                // Close all details first
+                if (willOpen) {
+                    allDetails.forEach(otherDetails => {
+                        otherDetails.open = false;
+                    });
+                }
+
+                // Then open/close the clicked one
+                details.open = willOpen;
+            });
+        });
+    </script>
+</body>
+</html>

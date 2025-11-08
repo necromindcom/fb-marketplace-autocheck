@@ -1,0 +1,12 @@
+{
+  "name": "fb-marketplace-autocheck",
+  "version": "1.0.0",
+  "description": "Facebook Marketplace Group Selector Extension",
+  "scripts": {
+    "dev": "tailwindcss -i ./web/src/input.css -o ./web/css/output.css --watch",
+    "build": "tailwindcss -i ./web/src/input.css -o ./web/css/output.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}
