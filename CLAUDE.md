@@ -8,7 +8,7 @@ This is a Chrome Manifest V3 extension called "Auto Groups Checker" that automat
 
 ## Architecture
 
-The extension follows a standard Chrome extension architecture with three main components:
+The extension follows a standard Chrome extension architecture with four main components:
 
 1. **background.js** - Service worker that handles extension installation lifecycle
 2. **content.js** - Main logic injected into Facebook Marketplace pages that:
@@ -16,7 +16,13 @@ The extension follows a standard Chrome extension architecture with three main c
    - Scans checkboxes on the page using multiple fallback selectors
    - Filters items by normalizing text (removing diacritics, lowercasing)
    - Auto-checks/unchecks checkboxes based on keyword matching with scroll delay
+   - Monitors URL changes to show/hide widget on correct pages only
+   - Persists widget position and collapse state using chrome.storage API
 3. **popup.html** - Extension popup that provides a link to Facebook Marketplace
+4. **web/** - Marketing landing page (separate from extension):
+   - SEO-optimized static HTML pages (index, privacy, terms, 404)
+   - Tailwind CSS styling built from `web/src/input.css` to `web/css/output.css`
+   - Designed for deployment to GitHub Pages, Netlify, or Vercel
 
 ### Key Technical Details
 
@@ -41,7 +47,43 @@ The `normalizeText()` function (content.js:147-154) is critical for keyword matc
 **Checkbox Processing:**
 Uses staggered timeouts (`SCROLL_DELAY = 100ms`) to avoid race conditions when programmatically clicking checkboxes. Each checkbox click is delayed by `index * SCROLL_DELAY` to ensure Facebook's UI can process the interaction.
 
+**URL Monitoring System:**
+Facebook is a Single Page Application (SPA), so the extension implements sophisticated URL monitoring to detect navigation without page reloads:
+- Intercepts `history.pushState()` and `history.replaceState()` to detect programmatic navigation
+- Listens to `popstate` events for back/forward button clicks
+- Fallback polling (1s interval) compares current URL to detect any missed changes
+- Shows widget only on `marketplace/you/selling` and `marketplace/you/dashboard` pages
+- Automatically removes widget when navigating away from target pages
+
+**Widget State Persistence:**
+Uses `chrome.storage.sync` API to save user preferences across sessions:
+- Widget position (`top`, `left`) - saved on drag end
+- Collapse state - saved when toggling widget body
+- State persists across browser restarts and syncs across devices (if Chrome sync enabled)
+
 ## Development Commands
+
+### Initial Setup
+```bash
+npm install
+```
+
+### Tailwind CSS Build
+The project uses Tailwind CSS for the web landing pages in the `/web` directory:
+
+- **Development mode** (watch for changes):
+  ```bash
+  npm run dev
+  ```
+  Watches `web/src/input.css` and rebuilds to `web/css/output.css` automatically. Keep this running during development.
+
+- **Production build** (minified):
+  ```bash
+  npm run build
+  ```
+  Generates minified CSS for production. Use before creating releases or deploying the landing page.
+
+**Note:** The Tailwind config (`tailwind.config.js`) scans `web/**/*.{html,js}`, `popup.html`, and `content.js` for classes. Custom colors defined: `primary-{50,100,500,600}` for Facebook blue theme.
 
 ### Loading the Extension
 1. Navigate to `chrome://extensions/`
@@ -52,11 +94,12 @@ Uses staggered timeouts (`SCROLL_DELAY = 100ms`) to avoid race conditions when p
 ### Testing Changes
 After code changes:
 1. Go to `chrome://extensions/`
-2. Click the reload icon for "Facebook Marketplace Filter"
+2. Click the reload icon for "Auto Groups Checker"
 3. Refresh any open Facebook Marketplace tabs
 
 ### Manifest Permissions
 - `activeTab` + `scripting` - Required for content script injection
+- `storage` - Saves widget position and collapse state across sessions
 - `host_permissions` - Limited to Facebook Marketplace seller pages only
 
 ## Code Conventions
